@@ -1,6 +1,7 @@
 package me.superkoh.kframework.lib.db.mybatis.builder;
 
 import com.google.common.base.CaseFormat;
+import com.google.common.collect.Lists;
 import me.superkoh.kframework.core.type.Page;
 import me.superkoh.kframework.lib.db.mybatis.annotation.Column;
 import me.superkoh.kframework.lib.db.mybatis.annotation.PK;
@@ -13,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -54,7 +57,8 @@ abstract public class AbstractCommonSqlBuilder {
 
     public String insert(Object record) {
         SQL sql = new SQL().INSERT_INTO(this.getTableName());
-        Field[] fields = record.getClass().getDeclaredFields();
+//        Field[] fields = record.getClass().getDeclaredFields();
+        List<Field> fields = getAllDeclaredFields(record.getClass());
         for (Field field : fields) {
             String fieldName = field.getName();
             Object value = valueOfField(record, fieldName);
@@ -77,7 +81,8 @@ abstract public class AbstractCommonSqlBuilder {
         String primaryKeyName = null;
         Column primaryKeyAnnotation = null;
         SQL sql = new SQL().UPDATE(this.getTableName());
-        Field[] fields = record.getClass().getDeclaredFields();
+//        Field[] fields = record.getClass().getDeclaredFields();
+        List<Field> fields = getAllDeclaredFields(record.getClass());
         for (Field field : fields) {
             String fieldName = field.getName();
             if (field.isAnnotationPresent(PK.class)) {
@@ -198,6 +203,18 @@ abstract public class AbstractCommonSqlBuilder {
         if (null != orderBy && !orderBy.isEmpty()) {
             sql.ORDER_BY(orderBy);
         }
+    }
+
+    private List<Field> getAllDeclaredFields(Class clazz) {
+        Field[] fields = clazz.getDeclaredFields();
+        if (fields.length < 1) {
+            return Collections.emptyList();
+        }
+        List<Field> fieldList = Lists.newArrayList(fields);
+        if (null != clazz.getSuperclass()) {
+            fieldList.addAll(getAllDeclaredFields(clazz.getSuperclass()));
+        }
+        return fieldList;
     }
 
 }

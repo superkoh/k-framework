@@ -1,9 +1,10 @@
 package me.superkoh.kframework.lib.db.mybatis.test;
 
 import me.superkoh.kframework.lib.db.mybatis.annotation.Mapper;
-import me.superkoh.kframework.lib.db.mybatis.builder.AbstractCommonSqlBuilderTest;
 import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectKey;
+import org.apache.ibatis.annotations.UpdateProvider;
 
 /**
  * Created by KOH on 2017/5/19.
@@ -12,7 +13,14 @@ import org.apache.ibatis.annotations.SelectKey;
  */
 @Mapper
 public interface UserMapper {
-    @InsertProvider(type = AbstractCommonSqlBuilderTest.UserSqlBuilder.class, method = "insert")
+
+    @Select("select * from user where id=#{id}")
+    User selectById(long id);
+
+    @InsertProvider(type = UserSqlBuilder.class, method = "insert")
     @SelectKey(statement = "select last_insert_id()", keyProperty = "id", before = false, resultType = Long.class)
-    int insert(AbstractCommonSqlBuilderTest.User record);
+    int insert(User record);
+
+    @UpdateProvider(type = UserSqlBuilder.class, method = "updateByPrimaryKeySelective")
+    int updateByPrimaryKeySelective(User record);
 }
