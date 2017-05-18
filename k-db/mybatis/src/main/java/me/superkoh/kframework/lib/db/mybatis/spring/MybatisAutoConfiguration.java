@@ -2,10 +2,13 @@ package me.superkoh.kframework.lib.db.mybatis.spring;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import me.superkoh.kframework.lib.db.mybatis.interceptor.TimeAndAuthorTraceInterceptor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -50,7 +53,7 @@ public class MybatisAutoConfiguration {
         return new HikariDataSource(configuration);
     }
 
-//    @Bean
+    //    @Bean
 //    public TransactionTemplate transactionTemplate(PlatformTransactionManager transactionManager) {
 //        AnnotationTransactionAspect.aspectOf().setTransactionManager(transactionManager);
 //        TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
@@ -58,6 +61,11 @@ public class MybatisAutoConfiguration {
 //        transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
 //        return transactionTemplate;
 //    }
+    @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    public TimeAndAuthorTraceInterceptor timeAndAuthorTraceInterceptor() {
+        return new TimeAndAuthorTraceInterceptor();
+    }
 
     public String getUrl() {
         return url;
