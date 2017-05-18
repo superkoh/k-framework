@@ -18,7 +18,7 @@ import java.util.Properties;
  * Created by KOH on 2016/12/20.
  */
 @Configuration
-@ConfigurationProperties("kframework.db.mybatis.datasource")
+@ConfigurationProperties("kframework.db.datasource")
 public class MybatisAutoConfiguration {
     private String url;
     private String username;
