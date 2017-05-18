@@ -13,4 +13,6 @@ public interface LoginUser {
     String getToken();
 
     LocalDateTime getTokenExpireTime();
+
+    boolean getAutoTrace();
 }

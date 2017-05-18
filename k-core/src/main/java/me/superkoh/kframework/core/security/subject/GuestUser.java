@@ -27,4 +27,9 @@ public class GuestUser extends BaseObject implements LoginUser {
     public LocalDateTime getTokenExpireTime() {
         return LocalDateTime.now();
     }
+
+    @Override
+    public boolean getAutoTrace() {
+        return false;
+    }
 }

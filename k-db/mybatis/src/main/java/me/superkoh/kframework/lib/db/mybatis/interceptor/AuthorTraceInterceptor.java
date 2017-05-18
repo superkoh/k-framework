@@ -22,14 +22,16 @@ public class AuthorTraceInterceptor implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
-        MappedStatement mappedStatement = (MappedStatement) invocation.getArgs()[0];
-        Object record = invocation.getArgs()[1];
-        if (record instanceof AuthorTraceable) {
-            AuthorTraceable authorTraceablePO = (AuthorTraceable) record;
-            if (mappedStatement.getSqlCommandType().equals(SqlCommandType.INSERT)) {
-                authorTraceablePO.setCreateUser(env.getLoginUser().getId());
+        if (env.getLoginUser().getAutoTrace()) {
+            MappedStatement mappedStatement = (MappedStatement) invocation.getArgs()[0];
+            Object record = invocation.getArgs()[1];
+            if (record instanceof AuthorTraceable) {
+                AuthorTraceable authorTraceablePO = (AuthorTraceable) record;
+                if (mappedStatement.getSqlCommandType().equals(SqlCommandType.INSERT)) {
+                    authorTraceablePO.setCreateUser(env.getLoginUser().getId());
+                }
+                authorTraceablePO.setUpdateUser(env.getLoginUser().getId());
             }
-            authorTraceablePO.setUpdateUser(env.getLoginUser().getId());
         }
         return invocation.proceed();
     }
