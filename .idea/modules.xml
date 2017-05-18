@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/k-core/k-core.iml" filepath="$PROJECT_DIR$/.idea/modules/k-core/k-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/k-db/mybatis/k-db_mybatis.iml" filepath="$PROJECT_DIR$/.idea/modules/k-db/mybatis/k-db_mybatis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/k-framework.iml" filepath="$PROJECT_DIR$/.idea/k-framework.iml" />
+    </modules>
+  </component>
+</project>
