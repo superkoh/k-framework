@@ -189,11 +189,11 @@ abstract public class AbstractCommonSqlBuilder {
                     sql.WHERE(columnName + " like " + fieldExpression);
                 } else if (value instanceof Number) {
                     if (fieldName.startsWith("min")) {
-                        sql.WHERE(columnName + " >= " + fieldExpression);
+                        sql.WHERE(columnName + ">=" + fieldExpression);
                     } else if (field.getName().startsWith("max")) {
-                        sql.WHERE(columnName + "<= " + fieldExpression);
+                        sql.WHERE(columnName + "<=" + fieldExpression);
                     } else {
-                        sql.WHERE(columnName + " = " + fieldExpression);
+                        sql.WHERE(columnName + "=" + fieldExpression);
                     }
                 } else {
                     sql.WHERE(columnName + "=" + fieldExpression);

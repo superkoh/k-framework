@@ -1,10 +1,10 @@
 package me.superkoh.kframework.lib.db.mybatis.test;
 
+import me.superkoh.kframework.core.type.Page;
 import me.superkoh.kframework.lib.db.mybatis.annotation.Mapper;
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectKey;
-import org.apache.ibatis.annotations.UpdateProvider;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 /**
  * Created by KOH on 2017/5/19.
@@ -23,4 +23,13 @@ public interface UserMapper {
 
     @UpdateProvider(type = UserSqlBuilder.class, method = "updateByPrimaryKeySelective")
     int updateByPrimaryKeySelective(User record);
+
+    @SelectProvider(type = UserSqlBuilder.class, method = "selectByQuery")
+    List<User> selectByQuery(Class clazz, @Param("query") UserQuery query, String orderBy);
+
+    @SelectProvider(type = UserSqlBuilder.class, method = "selectPageByQuery")
+    List<User> selectPageByQuery(Class clazz, @Param("query") UserQuery query, Page page);
+
+    @SelectProvider(type = UserSqlBuilder.class, method = "countByQuery")
+    long countByQuery(@Param("query") UserQuery query);
 }
