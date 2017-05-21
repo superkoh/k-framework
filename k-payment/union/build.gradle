@@ -1,0 +1,24 @@
+group 'me.superkoh.kframework.lib.payment'
+version '1.0.0'
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId group
+            artifactId 'union'
+            version version
+
+            from components.java
+
+            artifact sourceJar {
+                classifier "sources"
+            }
+        }
+    }
+}
+
+dependencies {
+    compile project(':k-core')
+    compile project(':k-db/mybatis')
+    compile project(':k-payment/common')
+}

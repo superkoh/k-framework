@@ -1,3 +1,8 @@
 include 'k-core'
 
 include 'k-db/mybatis'
+
+include 'k-payment/common'
+include 'k-payment/alipay'
+include 'k-payment/union'
+include 'k-payment/wechat'
