@@ -1,12 +1,12 @@
 package me.superkoh.kframework.lib.db.mybatis.interceptor;
 
-import me.superkoh.kframework.core.runtime.RuntimeEnv;
+import me.superkoh.kframework.core.security.subject.LoginUser;
+import me.superkoh.kframework.core.utils.ACU;
 import me.superkoh.kframework.lib.db.common.domain.AuthorTraceable;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.plugin.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Properties;
 
@@ -17,20 +17,19 @@ import java.util.Properties;
  */
 @Intercepts({@Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})})
 public class AuthorTraceInterceptor implements Interceptor {
-    @Autowired
-    private RuntimeEnv env;
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
-        if (env.getLoginUser().getAutoTrace()) {
+        LoginUser loginUser = ACU.currentUser();
+        if (null != loginUser && loginUser.getAutoTrace()) {
             MappedStatement mappedStatement = (MappedStatement) invocation.getArgs()[0];
             Object record = invocation.getArgs()[1];
             if (record instanceof AuthorTraceable) {
-                AuthorTraceable authorTraceablePO = (AuthorTraceable) record;
+                AuthorTraceable authorTraceableRecord = (AuthorTraceable) record;
                 if (mappedStatement.getSqlCommandType().equals(SqlCommandType.INSERT)) {
-                    authorTraceablePO.setCreateUser(env.getLoginUser().getId());
+                    authorTraceableRecord.setCreateUser(loginUser.getId());
                 }
-                authorTraceablePO.setUpdateUser(env.getLoginUser().getId());
+                authorTraceableRecord.setUpdateUser(loginUser.getId());
             }
         }
         return invocation.proceed();
