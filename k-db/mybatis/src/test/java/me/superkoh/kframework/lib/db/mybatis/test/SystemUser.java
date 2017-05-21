@@ -1,13 +1,17 @@
-package me.superkoh.kframework.core.security.subject;
+package me.superkoh.kframework.lib.db.mybatis.test;
 
-import me.superkoh.kframework.core.lang.BaseObject;
+import me.superkoh.kframework.core.security.subject.LoginUser;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
 /**
- * Created by KOH on 2016/12/19.
+ * Created by KOH on 2017/5/21.
+ * <p>
+ * k-framework
  */
-public class SystemUser extends BaseObject implements LoginUser {
+@Component("kLoginUser")
+public class SystemUser implements LoginUser {
     @Override
     public Long getId() {
         return 0L;
@@ -25,13 +29,6 @@ public class SystemUser extends BaseObject implements LoginUser {
 
     @Override
     public LocalDateTime getTokenExpireTime() {
-        return LocalDateTime.now();
+        return LocalDateTime.MAX;
     }
-
-    @Override
-    public boolean getAutoTrace() {
-        return true;
-    }
-
-
 }

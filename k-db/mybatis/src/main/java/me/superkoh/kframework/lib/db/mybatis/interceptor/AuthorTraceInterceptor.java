@@ -16,21 +16,28 @@ import java.util.Properties;
  * k-framework
  */
 @Intercepts({@Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})})
-public class AuthorTraceInterceptor implements Interceptor {
+public class AuthorTraceInterceptor<T extends LoginUser> implements Interceptor {
+
+    private Class<T> userClazz;
+
+    public AuthorTraceInterceptor(Class<T> userClazz) {
+        this.userClazz = userClazz;
+    }
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         LoginUser loginUser = ACU.currentUser();
-        if (null != loginUser && loginUser.getAutoTrace()) {
-            MappedStatement mappedStatement = (MappedStatement) invocation.getArgs()[0];
-            Object record = invocation.getArgs()[1];
-            if (record instanceof AuthorTraceable) {
-                AuthorTraceable authorTraceableRecord = (AuthorTraceable) record;
-                if (mappedStatement.getSqlCommandType().equals(SqlCommandType.INSERT)) {
-                    authorTraceableRecord.setCreateUser(loginUser.getId());
-                }
-                authorTraceableRecord.setUpdateUser(loginUser.getId());
+        if (null == loginUser || !loginUser.getClass().equals(userClazz)) {
+            return invocation.proceed();
+        }
+        MappedStatement mappedStatement = (MappedStatement) invocation.getArgs()[0];
+        Object record = invocation.getArgs()[1];
+        if (record instanceof AuthorTraceable) {
+            AuthorTraceable authorTraceableRecord = (AuthorTraceable) record;
+            if (mappedStatement.getSqlCommandType().equals(SqlCommandType.INSERT)) {
+                authorTraceableRecord.setCreateUser(loginUser.getId());
             }
+            authorTraceableRecord.setUpdateUser(loginUser.getId());
         }
         return invocation.proceed();
     }

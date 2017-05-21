@@ -2,7 +2,6 @@ package me.superkoh.kframework.lib.db.mybatis.spring;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import me.superkoh.kframework.lib.db.mybatis.interceptor.AuthorTraceInterceptor;
 import me.superkoh.kframework.lib.db.mybatis.interceptor.TimeTraceInterceptor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -68,11 +67,11 @@ public class MybatisAutoConfiguration {
         return new TimeTraceInterceptor();
     }
 
-    @Bean
-    @Order()
-    public AuthorTraceInterceptor authorTraceInterceptor() {
-        return new AuthorTraceInterceptor();
-    }
+//    @Bean
+//    @Order()
+//    public AuthorTraceInterceptor authorTraceInterceptor() {
+//        return new AuthorTraceInterceptor();
+//    }
 
     public String getUrl() {
         return url;

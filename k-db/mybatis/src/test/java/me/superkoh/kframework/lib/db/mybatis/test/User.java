@@ -1,6 +1,6 @@
 package me.superkoh.kframework.lib.db.mybatis.test;
 
-import me.superkoh.kframework.lib.db.common.domain.TimeTraceableDomain;
+import me.superkoh.kframework.lib.db.common.domain.TimeAndAuthorTraceableDomain;
 import me.superkoh.kframework.lib.db.mybatis.annotation.PK;
 
 /**
@@ -8,7 +8,7 @@ import me.superkoh.kframework.lib.db.mybatis.annotation.PK;
  * <p>
  * k-framework
  */
-public class User extends TimeTraceableDomain {
+public class User extends TimeAndAuthorTraceableDomain {
     @PK
     private Long id;
     private String name;

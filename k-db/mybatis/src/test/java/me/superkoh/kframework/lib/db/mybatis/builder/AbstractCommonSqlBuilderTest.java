@@ -31,6 +31,7 @@ public class AbstractCommonSqlBuilderTest {
         userMapper.insert(user);
         Assert.assertNotNull(user.getId());
         Assert.assertEquals("KOH", user.getName());
+        Assert.assertEquals(0L, user.getCreateUser().longValue());
     }
 
     @Test
