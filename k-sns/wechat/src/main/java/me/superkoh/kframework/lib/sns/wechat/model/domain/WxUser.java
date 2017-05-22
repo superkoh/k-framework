@@ -1,7 +1,7 @@
 package me.superkoh.kframework.lib.sns.wechat.model.domain;
 
 import me.superkoh.kframework.lib.db.mybatis.annotation.PK;
-import me.superkoh.kframework.lib.sns.wechat.app.bean.WxAppUserInfoRes;
+import me.superkoh.kframework.lib.sns.wechat.app.res.WxAppUserInfoRes;
 import me.superkoh.kframework.lib.sns.wechat.common.type.WxGender;
 
 /**

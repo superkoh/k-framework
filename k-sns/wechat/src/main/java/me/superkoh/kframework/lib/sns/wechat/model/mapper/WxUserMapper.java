@@ -2,10 +2,7 @@ package me.superkoh.kframework.lib.sns.wechat.model.mapper;
 
 import me.superkoh.kframework.lib.db.mybatis.annotation.Mapper;
 import me.superkoh.kframework.lib.sns.wechat.model.domain.WxUser;
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectKey;
-import org.apache.ibatis.annotations.UpdateProvider;
+import org.apache.ibatis.annotations.*;
 
 /**
  * Created by KOH on 2017/5/22.
@@ -21,11 +18,9 @@ public interface WxUserMapper {
     @UpdateProvider(type = WxUserSqlBuilder.class, method = "updateByPrimaryKeySelective")
     int updateByPrimaryKeySelective(WxUser record);
 
-
-
-    @Select("select * from sns_wx_user where open_id_for_app=#{openId}")
+    @SelectProvider(type = WxUserSqlBuilder.class, method = "selectByAppOpenId")
     WxUser selectByAppOpenId(String openId);
 
-    @Select("select * from sns_wx_user where union_id=#{unionId}")
+    @SelectProvider(type = WxUserSqlBuilder.class, method = "selectByUnionId")
     WxUser selectByUnionId(String unionId);
 }

@@ -28,7 +28,7 @@ abstract public class AbstractCommonSqlBuilder {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractCommonSqlBuilder.class);
 
-    private static Object valueOfField(Object obj, String fieldName) {
+    protected static Object valueOfField(Object obj, String fieldName) {
         try {
             return obj.getClass().getMethod("get" + StringUtils.capitalize(fieldName)).invoke(obj);
         } catch (Exception e) {
@@ -36,11 +36,11 @@ abstract public class AbstractCommonSqlBuilder {
         }
     }
 
-    private static String camelToUnderScore(String str) {
+    protected static String camelToUnderScore(String str) {
         return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, str);
     }
 
-    private static String fieldExpression(String fieldName, Column annotation) {
+    protected static String fieldExpression(String fieldName, Column annotation) {
         StringBuilder sb = new StringBuilder("#{").append(fieldName);
         if (null != annotation) {
             if (!JdbcType.UNDEFINED.equals(annotation.jdbcType())) {

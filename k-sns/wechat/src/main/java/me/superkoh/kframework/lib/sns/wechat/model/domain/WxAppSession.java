@@ -1,7 +1,7 @@
 package me.superkoh.kframework.lib.sns.wechat.model.domain;
 
 import me.superkoh.kframework.lib.db.mybatis.annotation.PK;
-import me.superkoh.kframework.lib.sns.wechat.app.bean.WxAppSessionRes;
+import me.superkoh.kframework.lib.sns.wechat.app.res.WxAppSessionRes;
 
 /**
  * Created by KOH on 2017/5/22.

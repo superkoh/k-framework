@@ -3,9 +3,9 @@ package me.superkoh.kframework.lib.sns.wechat.app.api;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import me.superkoh.kframework.lib.sns.wechat.app.bean.WxAppErrorRes;
-import me.superkoh.kframework.lib.sns.wechat.app.bean.WxAppSessionRes;
-import me.superkoh.kframework.lib.sns.wechat.app.bean.WxAppUserInfoRes;
+import me.superkoh.kframework.lib.sns.wechat.app.res.WxAppErrorRes;
+import me.superkoh.kframework.lib.sns.wechat.app.res.WxAppSessionRes;
+import me.superkoh.kframework.lib.sns.wechat.app.res.WxAppUserInfoRes;
 import me.superkoh.kframework.lib.sns.wechat.common.exception.WxSnsException;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -14,7 +14,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -29,7 +28,6 @@ import java.security.Security;
  * <p>
  * webFramework
  */
-@Component
 public class WxAppApi {
 
     private static final Logger logger = LoggerFactory.getLogger(WxAppApi.class);

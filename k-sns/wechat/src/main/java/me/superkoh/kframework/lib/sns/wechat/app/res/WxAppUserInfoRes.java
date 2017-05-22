@@ -1,4 +1,4 @@
-package me.superkoh.kframework.lib.sns.wechat.app.bean;
+package me.superkoh.kframework.lib.sns.wechat.app.res;
 
 /**
  * Created by KOH on 2017/4/25.

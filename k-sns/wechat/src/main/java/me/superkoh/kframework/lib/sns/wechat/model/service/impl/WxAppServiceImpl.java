@@ -1,8 +1,8 @@
 package me.superkoh.kframework.lib.sns.wechat.model.service.impl;
 
 import me.superkoh.kframework.lib.sns.wechat.app.api.WxAppApi;
-import me.superkoh.kframework.lib.sns.wechat.app.bean.WxAppSessionRes;
-import me.superkoh.kframework.lib.sns.wechat.app.bean.WxAppUserInfoRes;
+import me.superkoh.kframework.lib.sns.wechat.app.res.WxAppSessionRes;
+import me.superkoh.kframework.lib.sns.wechat.app.res.WxAppUserInfoRes;
 import me.superkoh.kframework.lib.sns.wechat.model.domain.WxAppSession;
 import me.superkoh.kframework.lib.sns.wechat.model.domain.WxUser;
 import me.superkoh.kframework.lib.sns.wechat.common.exception.WxSnsException;
