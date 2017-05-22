@@ -1,6 +1,6 @@
 package me.superkoh.kframework.lib.db.mybatis;
 
-import me.superkoh.kframework.lib.db.mybatis.annotation.Mapper;
+import me.superkoh.kframework.lib.db.mybatis.annotation.KMapper;
 import me.superkoh.kframework.lib.db.mybatis.interceptor.Author;
 import me.superkoh.kframework.lib.db.mybatis.interceptor.AuthorAware;
 import me.superkoh.kframework.lib.db.mybatis.interceptor.AuthorTraceInterceptor;
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
 
 @SpringBootApplication(scanBasePackages = {"me.superkoh.kframework"})
-@MapperScan(basePackages = {"me.superkoh.kframework"}, annotationClass = Mapper.class)
+@MapperScan(basePackages = {"me.superkoh.kframework"}, annotationClass = KMapper.class)
 public class Application {
 
     public static void main(String[] args) {

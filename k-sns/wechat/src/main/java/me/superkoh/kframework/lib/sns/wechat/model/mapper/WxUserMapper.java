@@ -1,6 +1,6 @@
 package me.superkoh.kframework.lib.sns.wechat.model.mapper;
 
-import me.superkoh.kframework.lib.db.mybatis.annotation.Mapper;
+import me.superkoh.kframework.lib.db.mybatis.annotation.KMapper;
 import me.superkoh.kframework.lib.sns.wechat.model.domain.WxUser;
 import org.apache.ibatis.annotations.*;
 
@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.*;
  * <p>
  * k-framework
  */
-@Mapper
+@KMapper
 public interface WxUserMapper {
     @InsertProvider(type = WxUserSqlBuilder.class, method = "insert")
     @SelectKey(statement = "select last_insert_id()", keyProperty = "id", before = false, resultType = Long.class)

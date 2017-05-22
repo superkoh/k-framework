@@ -1,7 +1,7 @@
 package me.superkoh.kframework.lib.db.mybatis.test;
 
 import me.superkoh.kframework.core.type.Page;
-import me.superkoh.kframework.lib.db.mybatis.annotation.Mapper;
+import me.superkoh.kframework.lib.db.mybatis.annotation.KMapper;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  * <p>
  * k-framework
  */
-@Mapper
+@KMapper
 public interface UserMapper {
 
     @Select("select * from user where id=#{id}")
