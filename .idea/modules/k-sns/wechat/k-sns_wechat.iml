@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.id=":k-payment/alipay" external.linked.project.path="$MODULE_DIR$/../../../../k-payment/alipay" external.root.project.path="$MODULE_DIR$/../../../.." external.system.id="GRADLE" external.system.module.group="me.superkoh.kframework.lib.payment" external.system.module.version="1.0.0" type="JAVA_MODULE" version="4">
+<module external.linked.project.id=":k-sns/wechat" external.linked.project.path="$MODULE_DIR$/../../../../k-sns/wechat" external.root.project.path="$MODULE_DIR$/../../../.." external.system.id="GRADLE" external.system.module.group="me.superkoh.kframework.lib.sns" external.system.module.version="1.0.0" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager">
-    <output url="file://$MODULE_DIR$/../../../../k-payment/alipay/build/classes/main" />
-    <output-test url="file://$MODULE_DIR$/../../../../k-payment/alipay/build/classes/test" />
+    <output url="file://$MODULE_DIR$/../../../../k-sns/wechat/build/classes/main" />
+    <output-test url="file://$MODULE_DIR$/../../../../k-sns/wechat/build/classes/test" />
     <exclude-output />
-    <content url="file://$MODULE_DIR$/../../../../k-payment/alipay">
-      <sourceFolder url="file://$MODULE_DIR$/../../../../k-payment/alipay/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../../k-payment/alipay/src/test/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../../k-payment/alipay/src/main/resources" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../../k-payment/alipay/src/test/resources" type="java-test-resource" />
-      <excludeFolder url="file://$MODULE_DIR$/../../../../k-payment/alipay/.gradle" />
-      <excludeFolder url="file://$MODULE_DIR$/../../../../k-payment/alipay/build" />
+    <content url="file://$MODULE_DIR$/../../../../k-sns/wechat">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../k-sns/wechat/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../../k-sns/wechat/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../../k-sns/wechat/src/main/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../../k-sns/wechat/src/test/resources" type="java-test-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../../k-sns/wechat/.gradle" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../../k-sns/wechat/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -142,13 +142,10 @@
     <orderEntry type="library" scope="PROVIDED" name="Gradle: org.apache.commons:commons-lang3:3.5" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.guava:guava:21.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: org.springframework.boot:spring-boot-starter:1.5.3.RELEASE" level="project" />
-    <orderEntry type="module" module-name="k-payment_common" scope="TEST" />
     <orderEntry type="module" module-name="k-db_mybatis" scope="TEST" />
     <orderEntry type="module" module-name="k-core" scope="TEST" />
-    <orderEntry type="module" module-name="k-payment_common" scope="RUNTIME" />
     <orderEntry type="module" module-name="k-db_mybatis" scope="RUNTIME" />
     <orderEntry type="module" module-name="k-core" scope="RUNTIME" />
-    <orderEntry type="module" module-name="k-payment_common" scope="PROVIDED" />
     <orderEntry type="module" module-name="k-db_mybatis" scope="PROVIDED" />
   </component>
 </module>
