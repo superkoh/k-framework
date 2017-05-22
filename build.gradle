@@ -13,14 +13,14 @@ allprojects {
         jcenter()
     }
 
-    dependencies {
-        compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '1.5.3.RELEASE'
-        compile group: 'com.google.guava', name: 'guava', version: '21.0'
-        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
-        compile group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '1.5.3.RELEASE'
-
-        testCompile('org.springframework.boot:spring-boot-starter-test:1.5.3.RELEASE')
-    }
+//    dependencies {
+//        compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '1.5.3.RELEASE'
+//        compile group: 'com.google.guava', name: 'guava', version: '21.0'
+//        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
+//        compile group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '1.5.3.RELEASE'
+//
+//        testCompile('org.springframework.boot:spring-boot-starter-test:1.5.3.RELEASE')
+//    }
 }
 
 subprojects {
