@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/k-core/k-core.iml" filepath="$PROJECT_DIR$/.idea/modules/k-core/k-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/k-db/mybatis/k-db_mybatis.iml" filepath="$PROJECT_DIR$/.idea/modules/k-db/mybatis/k-db_mybatis.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/k-framework.iml" filepath="$PROJECT_DIR$/.idea/k-framework.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/k-mvc/k-mvc.iml" filepath="$PROJECT_DIR$/.idea/modules/k-mvc/k-mvc.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/k-payment/alipay/k-payment_alipay.iml" filepath="$PROJECT_DIR$/.idea/modules/k-payment/alipay/k-payment_alipay.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/k-payment/common/k-payment_common.iml" filepath="$PROJECT_DIR$/.idea/modules/k-payment/common/k-payment_common.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/k-payment/union/k-payment_union.iml" filepath="$PROJECT_DIR$/.idea/modules/k-payment/union/k-payment_union.iml" />

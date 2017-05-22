@@ -1,0 +1,26 @@
+group 'me.superkoh.kframework'
+version '1.0.0'
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId group
+            artifactId 'mvc'
+            version version
+
+            from components.java
+
+            artifact sourceJar {
+                classifier "sources"
+            }
+        }
+    }
+
+    dependencies {
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.5.3.RELEASE'
+        compile 'io.springfox:springfox-swagger2:2.6.1'
+        compile 'io.springfox:springfox-swagger-ui:2.6.1'
+        compile('commons-io:commons-io:2.5')
+        compile project(':k-core')
+    }
+}

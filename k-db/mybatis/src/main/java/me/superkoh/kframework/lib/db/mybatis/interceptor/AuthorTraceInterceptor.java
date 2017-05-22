@@ -1,7 +1,6 @@
 package me.superkoh.kframework.lib.db.mybatis.interceptor;
 
 import me.superkoh.kframework.core.security.subject.LoginUser;
-import me.superkoh.kframework.core.utils.ACU;
 import me.superkoh.kframework.lib.db.common.domain.AuthorTraceable;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -16,18 +15,18 @@ import java.util.Properties;
  * k-framework
  */
 @Intercepts({@Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})})
-public class AuthorTraceInterceptor<T extends LoginUser> implements Interceptor {
+public class AuthorTraceInterceptor implements Interceptor {
 
-    private Class<T> userClazz;
+    private AuthorTraceLoginUserAware loginUserAware;
 
-    public AuthorTraceInterceptor(Class<T> userClazz) {
-        this.userClazz = userClazz;
+    public AuthorTraceInterceptor(AuthorTraceLoginUserAware loginUserAware) {
+        this.loginUserAware = loginUserAware;
     }
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
-        LoginUser loginUser = ACU.currentUser();
-        if (null == loginUser || !loginUser.getClass().equals(userClazz)) {
+        LoginUser loginUser = loginUserAware.getLoginUser();
+        if (null == loginUser) {
             return invocation.proceed();
         }
         MappedStatement mappedStatement = (MappedStatement) invocation.getArgs()[0];
