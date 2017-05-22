@@ -1,10 +1,9 @@
 package me.superkoh.kframework.lib.db.mybatis;
 
-import me.superkoh.kframework.core.security.subject.LoginUser;
 import me.superkoh.kframework.lib.db.mybatis.annotation.Mapper;
+import me.superkoh.kframework.lib.db.mybatis.interceptor.Author;
+import me.superkoh.kframework.lib.db.mybatis.interceptor.AuthorAware;
 import me.superkoh.kframework.lib.db.mybatis.interceptor.AuthorTraceInterceptor;
-import me.superkoh.kframework.lib.db.mybatis.interceptor.AuthorTraceLoginUserAware;
-import me.superkoh.kframework.lib.db.mybatis.test.SystemUser;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,14 +22,14 @@ public class Application {
     @Bean
     @Order()
     public AuthorTraceInterceptor authorTraceInterceptor() {
-        return new AuthorTraceInterceptor(new DefaultLoginUserAware());
+        return new AuthorTraceInterceptor(new DefaultAuthorAware());
     }
 
-    public static class DefaultLoginUserAware implements AuthorTraceLoginUserAware {
+    public static class DefaultAuthorAware implements AuthorAware {
 
         @Override
-        public LoginUser getLoginUser() {
-            return new SystemUser();
+        public Author getAuthor() {
+            return new Author(1L);
         }
     }
 }

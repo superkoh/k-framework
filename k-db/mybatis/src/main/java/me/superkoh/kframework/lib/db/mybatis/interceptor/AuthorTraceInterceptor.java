@@ -1,6 +1,5 @@
 package me.superkoh.kframework.lib.db.mybatis.interceptor;
 
-import me.superkoh.kframework.core.security.subject.LoginUser;
 import me.superkoh.kframework.lib.db.common.domain.AuthorTraceable;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -17,16 +16,16 @@ import java.util.Properties;
 @Intercepts({@Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})})
 public class AuthorTraceInterceptor implements Interceptor {
 
-    private AuthorTraceLoginUserAware loginUserAware;
+    private AuthorAware authorAware;
 
-    public AuthorTraceInterceptor(AuthorTraceLoginUserAware loginUserAware) {
-        this.loginUserAware = loginUserAware;
+    public AuthorTraceInterceptor(AuthorAware authorAware) {
+        this.authorAware = authorAware;
     }
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
-        LoginUser loginUser = loginUserAware.getLoginUser();
-        if (null == loginUser) {
+        Author author = authorAware.getAuthor();
+        if (null == author) {
             return invocation.proceed();
         }
         MappedStatement mappedStatement = (MappedStatement) invocation.getArgs()[0];
@@ -34,9 +33,9 @@ public class AuthorTraceInterceptor implements Interceptor {
         if (record instanceof AuthorTraceable) {
             AuthorTraceable authorTraceableRecord = (AuthorTraceable) record;
             if (mappedStatement.getSqlCommandType().equals(SqlCommandType.INSERT)) {
-                authorTraceableRecord.setCreateUser(loginUser.getId());
+                authorTraceableRecord.setCreateUser(author.getAuthorId());
             }
-            authorTraceableRecord.setUpdateUser(loginUser.getId());
+            authorTraceableRecord.setUpdateUser(author.getAuthorId());
         }
         return invocation.proceed();
     }
