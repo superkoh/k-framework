@@ -1,4 +1,4 @@
-package me.superkoh.kframework.core.security.subject;
+package me.superkoh.kframework.mvc.security;
 
 import java.time.LocalDateTime;
 

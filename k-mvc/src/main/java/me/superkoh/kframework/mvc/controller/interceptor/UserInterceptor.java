@@ -1,6 +1,6 @@
 package me.superkoh.kframework.mvc.controller.interceptor;
 
-import me.superkoh.kframework.core.security.subject.LoginUser;
+import me.superkoh.kframework.mvc.security.LoginUser;
 import me.superkoh.kframework.mvc.controller.bean.RequestAttributes;
 import me.superkoh.kframework.mvc.controller.config.RequestHeaderProperties;
 import me.superkoh.kframework.mvc.security.LoginUserService;

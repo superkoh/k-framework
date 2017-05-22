@@ -1,6 +1,6 @@
 package me.superkoh.kframework.mvc.controller.bean;
 
-import me.superkoh.kframework.core.security.subject.LoginUser;
+import me.superkoh.kframework.mvc.security.LoginUser;
 import me.superkoh.kframework.mvc.config.profiles.ProfileConstant;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
