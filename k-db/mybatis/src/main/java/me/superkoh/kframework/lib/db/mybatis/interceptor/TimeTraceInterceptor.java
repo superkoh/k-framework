@@ -1,11 +1,13 @@
 package me.superkoh.kframework.lib.db.mybatis.interceptor;
 
 import me.superkoh.kframework.lib.db.common.domain.TimeTraceable;
+import me.superkoh.kframework.lib.db.common.domain.TimestampTraceable;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.plugin.*;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Properties;
 
@@ -27,6 +29,13 @@ public class TimeTraceInterceptor implements Interceptor {
                 timeTraceableRecord.setCreateTime(now);
             }
             timeTraceableRecord.setUpdateTime(now);
+        } else if (record instanceof TimestampTraceable) {
+            TimestampTraceable timestampTraceableRecord = (TimestampTraceable) record;
+            long timestamp = Instant.now().getEpochSecond();
+            if (mappedStatement.getSqlCommandType().equals(SqlCommandType.INSERT)) {
+                timestampTraceableRecord.setCreateTime(timestamp);
+            }
+            timestampTraceableRecord.setUpdateTime(timestamp);
         }
         return invocation.proceed();
     }
