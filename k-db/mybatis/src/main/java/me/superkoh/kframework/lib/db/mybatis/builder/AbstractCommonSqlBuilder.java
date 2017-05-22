@@ -4,6 +4,7 @@ import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
 import me.superkoh.kframework.core.type.Page;
 import me.superkoh.kframework.lib.db.mybatis.annotation.Column;
+import me.superkoh.kframework.lib.db.mybatis.annotation.Ignore;
 import me.superkoh.kframework.lib.db.mybatis.annotation.PK;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.jdbc.SQL;
@@ -60,6 +61,9 @@ abstract public class AbstractCommonSqlBuilder {
 //        Field[] fields = record.getClass().getDeclaredFields();
         List<Field> fields = getAllDeclaredFields(record.getClass());
         for (Field field : fields) {
+            if (field.isAnnotationPresent(Ignore.class)) {
+                continue;
+            }
             String fieldName = field.getName();
             Object value = valueOfField(record, fieldName);
             if (null != value) {
@@ -84,6 +88,9 @@ abstract public class AbstractCommonSqlBuilder {
 //        Field[] fields = record.getClass().getDeclaredFields();
         List<Field> fields = getAllDeclaredFields(record.getClass());
         for (Field field : fields) {
+            if (field.isAnnotationPresent(Ignore.class)) {
+                continue;
+            }
             String fieldName = field.getName();
             if (field.isAnnotationPresent(PK.class)) {
                 primaryKeyName = field.getName();
@@ -155,6 +162,9 @@ abstract public class AbstractCommonSqlBuilder {
         SQL sql = new SQL().FROM(this.getTableName());
         Field[] retFields = clazz.getDeclaredFields();
         for (Field field : retFields) {
+            if (field.isAnnotationPresent(Ignore.class)) {
+                continue;
+            }
             if (field.isAnnotationPresent(Column.class)) {
                 sql.SELECT(field.getAnnotation(Column.class).column().trim());
             } else {
@@ -172,6 +182,9 @@ abstract public class AbstractCommonSqlBuilder {
     private void queryWHERE(SQL sql, Object query, String orderBy) {
         Field[] queryFields = query.getClass().getDeclaredFields();
         for (Field field : queryFields) {
+            if (field.isAnnotationPresent(Ignore.class)) {
+                continue;
+            }
             String fieldName = field.getName();
             String columnName;
             String fieldExpression;
