@@ -17,7 +17,7 @@ public class WxUser {
     private String openIdForApp;
     private String unionId;
     private String nickname;
-    private WxGender wxGender;
+    private WxGender gender;
     private String country;
     private String province;
     private String city;
@@ -30,7 +30,7 @@ public class WxUser {
         this.openIdForApp = userInfo.getOpenId();
         this.unionId = userInfo.getUnionId();
         this.nickname = userInfo.getNickName();
-        this.wxGender = WxGender.of(userInfo.getGender());
+        this.gender = WxGender.of(userInfo.getGender());
         this.country = userInfo.getCountry();
         this.province = userInfo.getProvince();
         this.city = userInfo.getCity();
@@ -85,12 +85,12 @@ public class WxUser {
         this.nickname = nickname;
     }
 
-    public WxGender getWxGender() {
-        return wxGender;
+    public WxGender getGender() {
+        return gender;
     }
 
-    public void setWxGender(WxGender wxGender) {
-        this.wxGender = wxGender;
+    public void setGender(WxGender gender) {
+        this.gender = gender;
     }
 
     public String getCountry() {
