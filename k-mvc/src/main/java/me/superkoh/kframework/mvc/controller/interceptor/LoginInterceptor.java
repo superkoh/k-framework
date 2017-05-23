@@ -24,9 +24,9 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             return true;
         }
         HandlerMethod handlerMethod = (HandlerMethod) handler;
-        if (null != requestAttributes.getLoginUser()
-                && (requestAttributes.getLoginUser().getId() < 1
-                || requestAttributes.getLoginUser().getTokenExpireTime().isBefore(LocalDateTime.now()))) {
+        if (null == requestAttributes.getLoginUser()
+                || requestAttributes.getLoginUser().getId() < 1
+                || requestAttributes.getLoginUser().getTokenExpireTime().isBefore(LocalDateTime.now())) {
             if (handlerMethod.getMethod().isAnnotationPresent(LoginRequired.class)) {
                 throw new NotLoginException();
             }
