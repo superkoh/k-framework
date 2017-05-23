@@ -1,6 +1,7 @@
 package me.superkoh.kframework.mvc.controller.handler;
 
 import me.superkoh.kframework.mvc.controller.annotation.KController;
+import me.superkoh.kframework.mvc.controller.annotation.KRestController;
 import me.superkoh.kframework.mvc.controller.config.RequestHeaderProperties;
 import me.superkoh.kframework.mvc.controller.response.BizRes;
 import me.superkoh.kframework.mvc.controller.response.ErrorRes;
@@ -14,7 +15,7 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-@ControllerAdvice(annotations = {KController.class})
+@ControllerAdvice(annotations = {KController.class, KRestController.class})
 final public class DefaultResponseBodyHandler implements ResponseBodyAdvice<BizRes> {
     @Autowired
     private RequestHeaderProperties requestHeaderProperties;

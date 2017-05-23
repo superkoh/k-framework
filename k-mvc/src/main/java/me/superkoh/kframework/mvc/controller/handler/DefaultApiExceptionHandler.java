@@ -3,6 +3,7 @@ package me.superkoh.kframework.mvc.controller.handler;
 import me.superkoh.kframework.core.exception.KException;
 import me.superkoh.kframework.core.exception.KRuntimeException;
 import me.superkoh.kframework.mvc.controller.annotation.KController;
+import me.superkoh.kframework.mvc.controller.annotation.KRestController;
 import me.superkoh.kframework.mvc.controller.response.ErrorRes;
 import me.superkoh.kframework.mvc.exception.NeedGuestException;
 import me.superkoh.kframework.mvc.exception.NotLoginException;
@@ -20,7 +21,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.Set;
 
-@ControllerAdvice(annotations = {KController.class})
+@ControllerAdvice(annotations = {KController.class, KRestController.class})
 final public class DefaultApiExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger("apiException");
 
