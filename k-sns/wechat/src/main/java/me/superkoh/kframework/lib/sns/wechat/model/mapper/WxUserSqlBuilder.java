@@ -19,7 +19,7 @@ public class WxUserSqlBuilder extends AbstractCommonSqlBuilder {
         return new SQL()
                 .SELECT("*")
                 .FROM(this.getTableName())
-                .WHERE("open_id=#{openId}").toString();
+                .WHERE("open_id_for_app=#{openId}").toString();
     }
 
     public String selectByUnionId(String unionId) {
