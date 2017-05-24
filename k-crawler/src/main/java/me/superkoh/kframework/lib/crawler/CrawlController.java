@@ -1,4 +1,4 @@
-package me.superkoh.kframework.crawler;
+package me.superkoh.kframework.lib.crawler;
 
 import okhttp3.*;
 import org.slf4j.Logger;

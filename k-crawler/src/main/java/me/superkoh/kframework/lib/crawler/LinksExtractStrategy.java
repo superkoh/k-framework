@@ -1,4 +1,4 @@
-package me.superkoh.kframework.crawler;
+package me.superkoh.kframework.lib.crawler;
 
 import java.net.URL;
 import java.util.List;

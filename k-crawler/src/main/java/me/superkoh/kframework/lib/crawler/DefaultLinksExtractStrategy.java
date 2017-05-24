@@ -1,4 +1,4 @@
-package me.superkoh.kframework.crawler;
+package me.superkoh.kframework.lib.crawler;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

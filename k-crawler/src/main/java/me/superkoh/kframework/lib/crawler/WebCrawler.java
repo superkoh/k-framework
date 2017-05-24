@@ -1,4 +1,4 @@
-package me.superkoh.kframework.crawler;
+package me.superkoh.kframework.lib.crawler;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

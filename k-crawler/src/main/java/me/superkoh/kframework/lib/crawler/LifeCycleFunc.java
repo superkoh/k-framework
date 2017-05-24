@@ -1,4 +1,4 @@
-package me.superkoh.kframework.crawler;
+package me.superkoh.kframework.lib.crawler;
 
 /**
  * Created by KOH on 2017/5/24.

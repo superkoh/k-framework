@@ -1,4 +1,4 @@
-group 'me.superkoh.kframework'
+group 'me.superkoh.kframework.lib'
 version '1.0.0'
 
 publishing {
