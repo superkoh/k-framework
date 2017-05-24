@@ -10,7 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -24,7 +23,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class CrawlController<T extends WebCrawler> {
     private static final Logger logger = LoggerFactory.getLogger(CrawlController.class);
 
-    private Queue<URL> toFetch = new ConcurrentLinkedQueue<>();
+    private LinkedBlockingQueue<URL> toFetch = new LinkedBlockingQueue<>();
     private CrawlConfig config;
     private ProxyGenerator proxyGenerator;
 
@@ -34,6 +33,12 @@ public class CrawlController<T extends WebCrawler> {
     private AtomicInteger threadCount;
 
     private Class<T> clazz;
+
+    private LifeCycleFunc beforeRestart;
+
+    public void setBeforeRestart(LifeCycleFunc beforeRestart) {
+        this.beforeRestart = beforeRestart;
+    }
 
     public CrawlController(Class<T> clazz, CrawlConfig config) {
         this.clazz = clazz;
@@ -71,6 +76,9 @@ public class CrawlController<T extends WebCrawler> {
                 executorService.shutdownNow();
                 logger.info("shutdown finished");
             }
+        }
+        if (null != beforeRestart) {
+            beforeRestart.execute();
         }
         try {
             final AtomicLong count = new AtomicLong(0);
@@ -158,11 +166,11 @@ public class CrawlController<T extends WebCrawler> {
         toFetch.add(url);
     }
 
-    public Queue<URL> getToFetch() {
+    public LinkedBlockingQueue<URL> getToFetch() {
         return toFetch;
     }
 
-    public void setToFetch(Queue<URL> toFetch) {
+    public void setToFetch(LinkedBlockingQueue<URL> toFetch) {
         this.toFetch = toFetch;
     }
 

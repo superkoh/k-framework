@@ -9,8 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -66,12 +64,11 @@ abstract public class WebCrawler implements Runnable {
         controller.getThreadCount().incrementAndGet();
         while (true) {
             if (controller.getToFetch().isEmpty()) {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                int num = controller.getThreadCount().decrementAndGet();
+                if (num < controller.getConfig().getMinClientNumber()) {
+                    controller.restart();
                 }
-                continue;
+                break;
             }
             try {
                 URL url = (controller.getToFetch()).poll();
@@ -81,32 +78,34 @@ abstract public class WebCrawler implements Runnable {
                 if (controller.getCache().contains(getUrlIdentity(url))) {
                     continue;
                 }
-                Response response;
+                String html;
                 try {
                     logger.info("fetch: " + url.toString());
-                    response = fetchPage(url.toString());
-                } catch (SocketTimeoutException | ConnectException e) {
-                    controller.getToFetch().add(url);
+                    Response response = fetchPage(url.toString());
+                    if (!response.isSuccessful()) {
+                        continue;
+                    }
+                    ResponseBody responseBody = response.body();
+                    if (null == responseBody) {
+                        continue;
+                    }
+                    html = responseBody.string();
+                } catch (IOException e) {
+                    controller.getToFetch().offer(url);
                     int num = controller.getThreadCount().decrementAndGet();
                     if (num < controller.getConfig().getMinClientNumber()) {
                         controller.restart();
                     }
                     break;
                 }
-                if (!response.isSuccessful()) {
-                    continue;
-                }
-                ResponseBody responseBody = response.body();
-                if (null == responseBody) {
-                    continue;
-                }
-                String html = responseBody.string();
                 if (shouldDownload(url, html)) {
                     save(url, html);
                 }
-                LinksExtractStrategy strategy = getLinksExtractStrategy(url, html);
-                List<URL> links = strategy.getLinks(url, html);
-                controller.getToFetch().addAll(links);
+                if (shouldFollowLinksIn(url)) {
+                    LinksExtractStrategy strategy = getLinksExtractStrategy(url, html);
+                    List<URL> links = strategy.getLinks(url, html);
+                    links.forEach(link -> controller.getToFetch().offer(link));
+                }
                 Thread.sleep(1000);
             } catch (Exception e) {
                 e.printStackTrace();
