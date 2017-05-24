@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/k-core/k-core.iml" filepath="$PROJECT_DIR$/.idea/modules/k-core/k-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/k-crawler/k-crawler.iml" filepath="$PROJECT_DIR$/.idea/modules/k-crawler/k-crawler.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/k-db/mybatis/k-db_mybatis.iml" filepath="$PROJECT_DIR$/.idea/modules/k-db/mybatis/k-db_mybatis.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/k-framework.iml" filepath="$PROJECT_DIR$/.idea/k-framework.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/k-mvc/k-mvc.iml" filepath="$PROJECT_DIR$/.idea/modules/k-mvc/k-mvc.iml" />
