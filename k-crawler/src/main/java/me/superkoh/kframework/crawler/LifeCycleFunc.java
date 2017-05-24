@@ -6,5 +6,5 @@ package me.superkoh.kframework.crawler;
  * k-framework
  */
 public interface LifeCycleFunc {
-    void execute();
+    boolean execute();
 }

@@ -14,13 +14,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * Created by KOH on 2017/5/24.
  * <p>
  * k-framework
  */
-abstract public class WebCrawler implements Runnable {
+abstract public class WebCrawler implements Callable<Boolean> {
 
     private static final Logger logger = LoggerFactory.getLogger(WebCrawler.class);
 
@@ -60,15 +61,11 @@ abstract public class WebCrawler implements Runnable {
     }
 
     @Override
-    final public void run() {
+    public Boolean call() throws Exception {
         controller.getThreadCount().incrementAndGet();
         while (true) {
             if (controller.getToFetch().isEmpty()) {
-                int num = controller.getThreadCount().decrementAndGet();
-                if (num < controller.getConfig().getMinClientNumber()) {
-                    controller.restart();
-                }
-                break;
+                return false;
             }
             try {
                 URL url = (controller.getToFetch()).poll();
@@ -92,11 +89,7 @@ abstract public class WebCrawler implements Runnable {
                     html = responseBody.string();
                 } catch (IOException e) {
                     controller.getToFetch().offer(url);
-                    int num = controller.getThreadCount().decrementAndGet();
-                    if (num < controller.getConfig().getMinClientNumber()) {
-                        controller.restart();
-                    }
-                    break;
+                    return false;
                 }
                 if (shouldDownload(url, html)) {
                     save(url, html);

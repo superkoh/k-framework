@@ -31,14 +31,11 @@ public class CrawlController<T extends WebCrawler> {
     private Set<String> cache = new ConcurrentSkipListSet<>();
     private ExecutorService executorService;
     private AtomicInteger threadCount;
+    private List<Future<Boolean>> futureList;
 
     private Class<T> clazz;
 
     private LifeCycleFunc beforeRestart;
-
-    public void setBeforeRestart(LifeCycleFunc beforeRestart) {
-        this.beforeRestart = beforeRestart;
-    }
 
     public CrawlController(Class<T> clazz, CrawlConfig config) {
         this.clazz = clazz;
@@ -46,39 +43,36 @@ public class CrawlController<T extends WebCrawler> {
     }
 
     public CrawlController(Class<T> clazz, CrawlConfig config, ProxyGenerator proxyGenerator) {
-        this.clazz = clazz;
-        this.config = config;
+        this(clazz, config);
         this.proxyGenerator = proxyGenerator;
+    }
+
+    public void setBeforeRestart(LifeCycleFunc beforeRestart) {
+        this.beforeRestart = beforeRestart;
     }
 
     public void start() {
         threadCount = new AtomicInteger(1);
         updateClients();
         executorService = Executors.newFixedThreadPool(httpClientList.size());
+        futureList = new ArrayList<>();
         httpClientList.forEach(okHttpClient -> {
             WebCrawler crawler = newInstance(okHttpClient);
             if (null != crawler) {
-                executorService.submit(crawler);
+                futureList.add(executorService.submit(crawler));
             }
         });
-    }
-
-    public void restart() {
-        if (null != executorService && !executorService.isTerminated()) {
+        futureList.forEach(future->{
             try {
-                executorService.awaitTermination(5, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                logger.error(e.getMessage());
-            } finally {
-                if (!executorService.isTerminated()) {
-                    logger.error("cancel non-finished tasks");
-                }
-                executorService.shutdownNow();
-                logger.info("shutdown finished");
+                future.get();
+            } catch (InterruptedException | ExecutionException e) {
+                logger.error(e.getMessage(), e);
             }
-        }
+        });
         if (null != beforeRestart) {
-            beforeRestart.execute();
+            if(!beforeRestart.execute()) {
+                return;
+            }
         }
         try {
             final AtomicLong count = new AtomicLong(0);
@@ -93,22 +87,12 @@ public class CrawlController<T extends WebCrawler> {
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }
-        threadCount = new AtomicInteger(1);
-        updateClients();
-        if (config.getMinClientNumber() <= config.getMaxClientNumber() && httpClientList.size() < config.getMinClientNumber()) {
-            restart();
-        }
-        executorService = Executors.newFixedThreadPool(httpClientList.size());
-        httpClientList.forEach(okHttpClient -> {
-            WebCrawler crawler = newInstance(okHttpClient);
-            if (null != crawler) {
-                executorService.submit(crawler);
-            }
-        });
+        logger.info("********** New Round **********");
+        start();
     }
 
     private void updateClients() {
-        httpClientList = new ArrayList<>();
+        List<OkHttpClient> tmpHttpClientList = new ArrayList<>();
         List<ProxyBean> proxyBeanList = null == proxyGenerator ? null : proxyGenerator.nextProxyList();
         int index = 0;
         for (int i = 0; i < config.getMaxClientNumber(); i++) {
@@ -138,15 +122,21 @@ public class CrawlController<T extends WebCrawler> {
                                 .cookieJar(new JavaNetCookieJar(cookieHandler))
                                 .proxy(proxy)
                                 .build();
-                        httpClientList.add(httpClientToAdd);
+                        tmpHttpClientList.add(httpClientToAdd);
                     }
                 } catch (Exception e) {
                     logger.error(e.getMessage());
                 }
                 index++;
-            } else {
+            }
+        }
+        if (tmpHttpClientList.isEmpty() && httpClientList.isEmpty()) {
+            for (int i = 0; i < config.getMaxClientNumber(); i++) {
                 httpClientList.add(new OkHttpClient.Builder().build());
             }
+        } else if (!tmpHttpClientList.isEmpty()) {
+            httpClientList.clear();
+            httpClientList.addAll(tmpHttpClientList);
         }
     }
 
