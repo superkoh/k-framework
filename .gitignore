@@ -210,3 +210,4 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 /k-db/mybatis/src/test/resources/application-local.yml
+/.idea/
