@@ -21,4 +21,8 @@ dependencies {
     compile project(':k-core')
     compile project(':k-db/mybatis')
     compile project(':k-payment/common')
+
+    compile group: 'com.thoughtworks.xstream', name: 'xstream', version: '1.4.7'
+    compile('org.apache.commons:commons-lang3:3.4')
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3'
 }

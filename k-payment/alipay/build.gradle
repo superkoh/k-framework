@@ -21,4 +21,9 @@ dependencies {
     compile project(':k-core')
     compile project(':k-db/mybatis')
     compile project(':k-payment/common')
+
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile group: 'commons-codec', name: 'commons-codec', version: '1.10'
+    compile group: 'commons-httpclient', name: 'commons-httpclient', version: '3.1'
+    compile group: 'dom4j', name: 'dom4j', version: '1.6.1'
 }

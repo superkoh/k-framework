@@ -21,4 +21,6 @@ dependencies {
     compile project(':k-core')
     compile project(':k-db/mybatis')
     compile project(':k-payment/common')
+
+    compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.55'
 }

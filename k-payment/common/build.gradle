@@ -19,4 +19,5 @@ publishing {
 
 dependencies {
     compile project(':k-core')
+    compile project(':k-db/mybatis')
 }
