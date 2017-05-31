@@ -3,6 +3,8 @@ package me.superkoh.kframework.lib.sns.wechat.model.domain;
 import me.superkoh.kframework.lib.db.mybatis.annotation.PK;
 import me.superkoh.kframework.lib.sns.wechat.app.res.WxAppSessionRes;
 
+import java.time.LocalDateTime;
+
 /**
  * Created by KOH on 2017/5/22.
  * <p>
@@ -13,14 +15,14 @@ public class WxAppSession {
     private Long id;
     private String openId;
     private String sessionKey;
-    private Long expiresIn;
+    private LocalDateTime expireTime;
 
     public WxAppSession() {
     }
 
     public WxAppSession(WxAppSessionRes session) {
         this.openId = session.getOpenid();
-        this.expiresIn = session.getExpiresIn();
+        this.expireTime = LocalDateTime.now().plusSeconds(session.getExpiresIn());
         this.sessionKey = session.getSessionKey();
     }
 
@@ -48,11 +50,11 @@ public class WxAppSession {
         this.sessionKey = sessionKey;
     }
 
-    public Long getExpiresIn() {
-        return expiresIn;
+    public LocalDateTime getExpireTime() {
+        return expireTime;
     }
 
-    public void setExpiresIn(Long expiresIn) {
-        this.expiresIn = expiresIn;
+    public void setExpireTime(LocalDateTime expireTime) {
+        this.expireTime = expireTime;
     }
 }

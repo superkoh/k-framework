@@ -22,6 +22,12 @@ public interface WxUserMapper {
     @SelectProvider(type = WxUserSqlBuilder.class, method = "selectByAppOpenId")
     WxUser selectByAppOpenId(String openId);
 
+    @SelectProvider(type = WxUserSqlBuilder.class, method = "selectByOpenOpenId")
+    WxUser selectByOpenOpenId(String openId);
+
+    @SelectProvider(type = WxUserSqlBuilder.class, method = "selectByMpOpenId")
+    WxUser selectByMpOpenId(String openId);
+
     @SelectProvider(type = WxUserSqlBuilder.class, method = "selectByUnionId")
     WxUser selectByUnionId(String unionId);
 }

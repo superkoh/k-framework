@@ -15,6 +15,20 @@ public class WxUserSqlBuilder extends AbstractCommonSqlBuilder {
         return WxDbProperties.WX_USER_TABLE;
     }
 
+    public String selectByMpOpenId(String openId) {
+        return new SQL()
+                .SELECT("*")
+                .FROM(this.getTableName())
+                .WHERE("open_id_for_mp=#{openId}").toString();
+    }
+
+    public String selectByOpenOpenId(String openId) {
+        return new SQL()
+                .SELECT("*")
+                .FROM(this.getTableName())
+                .WHERE("open_id_for_open=#{openId}").toString();
+    }
+
     public String selectByAppOpenId(String openId) {
         return new SQL()
                 .SELECT("*")

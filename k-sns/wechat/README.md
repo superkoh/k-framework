@@ -25,7 +25,7 @@
       `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
       `open_id` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'openid',
       `session_key` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'sessionKey',
-      `expires_in` int(11) NOT NULL COMMENT '过期时间',
+      `expire_time` datetime NOT NULL COMMENT '过期时间',
       PRIMARY KEY (`id`),
       KEY `open_id` (`open_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

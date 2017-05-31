@@ -17,4 +17,28 @@ public interface WxUserService {
      * @return 用户信息
      */
     WxUser getUserByUnionId(@NotEmpty String unionId);
+
+    /**
+     * 根据小程序openId获取用户信息
+     *
+     * @param openId openId
+     * @return 用户信息
+     */
+    WxUser getUserByAppOpenId(@NotEmpty String openId);
+
+    /**
+     * 根据开放平台openId获取用户信息
+     *
+     * @param openId openId
+     * @return 用户信息
+     */
+    WxUser getUserByOpenOpenId(@NotEmpty String openId);
+
+    /**
+     * 根据公众号openId获取用户信息
+     *
+     * @param openId openId
+     * @return 用户信息
+     */
+    WxUser getUserByMpOpenId(@NotEmpty String openId);
 }
