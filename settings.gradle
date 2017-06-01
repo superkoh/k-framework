@@ -8,6 +8,7 @@ include 'k-payment/union'
 include 'k-payment/wechat'
 
 include 'k-sns/wechat'
+include 'k-sns/wechat-api'
 
 include 'k-mvc'
 

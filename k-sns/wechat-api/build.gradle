@@ -5,7 +5,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             groupId group
-            artifactId 'wechat'
+            artifactId 'wechat-api'
             version version
 
             from components.java
@@ -25,5 +25,4 @@ dependencies {
     compile group: 'commons-codec', name: 'commons-codec', version: '1.10'
     compile project(':k-core')
     compile project(':k-db/mybatis')
-    compile project(':k-sns/wechat-api')
 }
