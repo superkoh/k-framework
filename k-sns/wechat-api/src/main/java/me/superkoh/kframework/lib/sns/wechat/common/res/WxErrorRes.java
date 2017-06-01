@@ -1,11 +1,11 @@
-package me.superkoh.kframework.lib.sns.wechat.app.res;
+package me.superkoh.kframework.lib.sns.wechat.common.res;
 
 /**
  * Created by KOH on 2017/4/25.
  * <p>
  * webFramework
  */
-public class WxAppErrorRes {
+public class WxErrorRes {
     private Integer errcode;
     private String errmsg;
 
