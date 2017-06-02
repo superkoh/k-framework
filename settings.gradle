@@ -10,6 +10,8 @@ include 'k-payment/wechat'
 include 'k-sns/wechat'
 include 'k-sns/wechat-api'
 
+include 'k-utils/email/email-java'
+
 include 'k-mvc'
 
 include 'k-crawler'
