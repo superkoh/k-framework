@@ -1,7 +1,6 @@
 package me.superkoh.kframework.mvc.controller.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 
 import java.util.Arrays;
@@ -13,7 +12,6 @@ import java.util.List;
  * <p>
  * kmvc
  */
-@Configuration
 @ConfigurationProperties("kframework.mvc.response.header")
 public class ResponseHeaderProperties {
     private List<String> accessControlAllowOrigins = Collections.singletonList("*");
