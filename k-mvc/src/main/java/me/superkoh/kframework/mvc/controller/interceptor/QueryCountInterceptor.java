@@ -36,7 +36,11 @@ public class QueryCountInterceptor implements Interceptor, LogFilterInterceptor 
 
     @Override
     public String getOutput() {
-        String output = queryCount.get().toString();
+        Integer count = queryCount.get();
+        if (count == null) {
+            return "0";
+        }
+        String output = count.toString();
         queryCount.remove();
         return output;
     }

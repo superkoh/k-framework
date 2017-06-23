@@ -2,7 +2,7 @@ package me.superkoh.kframework.mvc.controller.interceptor;
 
 import me.superkoh.kframework.mvc.controller.config.ResponseHeaderProperties;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletResponse;
  * <p>
  * webFramework
  */
-@EnableConfigurationProperties(ResponseHeaderProperties.class)
 public class CorsInterceptor extends HandlerInterceptorAdapter {
+    @Autowired
     private ResponseHeaderProperties responseHeaderProperties;
 
     @Override

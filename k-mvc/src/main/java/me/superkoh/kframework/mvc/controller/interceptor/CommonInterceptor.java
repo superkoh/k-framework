@@ -42,6 +42,7 @@ public class CommonInterceptor extends HandlerInterceptorAdapter {
             deviceToken = UUID.randomUUID().toString();
             response.setHeader(requestHeaderProperties.getDeviceToken(), deviceToken);
             Cookie cookie = new Cookie(requestHeaderProperties.getSessionCookieName(), deviceToken);
+            cookie.setMaxAge(3600 * 24 * 365 * 10);
             response.addCookie(cookie);
         }
         requestAttributes.setDeviceToken(deviceToken);

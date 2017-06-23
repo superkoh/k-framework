@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -199,8 +201,12 @@ abstract public class AbstractCommonSqlBuilder {
             Object value = valueOfField(query, fieldName);
             if (null != value) {
                 if (value instanceof String) {
-                    sql.WHERE(columnName + " like " + fieldExpression);
-                } else if (value instanceof Number) {
+                    if (!((String) value).isEmpty()) {
+                        sql.WHERE(columnName + " like " + fieldExpression);
+                    }
+                } else if (value instanceof Number
+                        || value instanceof LocalDate
+                        || value instanceof LocalDateTime) {
                     if (fieldName.startsWith("min")) {
                         sql.WHERE(columnName + ">=" + fieldExpression);
                     } else if (field.getName().startsWith("max")) {
