@@ -41,7 +41,7 @@ public class JavaMailMessage {
         message.setFrom(new InternetAddress(fromAddress));
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
         message.setSubject(title);
-        message.setContent(content, "text/html");
+        message.setContent(content, "text/html;charset=UTF-8");
         Transport.send(message);
     }
 
@@ -61,7 +61,7 @@ public class JavaMailMessage {
             }
         });
         message.setSubject(title);
-        message.setContent(content, "text/html");
+        message.setContent(content, "text/html;charset=UTF-8");
         Transport.send(message);
     }
 
