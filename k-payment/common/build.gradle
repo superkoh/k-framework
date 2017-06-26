@@ -1,5 +1,4 @@
 group 'me.superkoh.kframework.lib.payment'
-version '1.0.0'
 
 publishing {
     publications {

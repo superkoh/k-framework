@@ -1,5 +1,4 @@
 group 'me.superkoh.kframework'
-version '1.0.1'
 
 publishing {
     publications {
@@ -18,7 +17,7 @@ publishing {
 }
 
 dependencies {
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '1.5.3.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '1.5.4.RELEASE'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '1.5.3.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '1.5.4.RELEASE'
 }

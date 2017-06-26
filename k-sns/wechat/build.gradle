@@ -1,5 +1,4 @@
 group 'me.superkoh.kframework.lib.sns'
-version '1.0.2'
 
 publishing {
     publications {
