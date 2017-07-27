@@ -201,7 +201,7 @@ abstract public class AbstractCommonSqlBuilder {
             Object value = valueOfField(query, fieldName);
             if (null != value) {
                 if (value instanceof String) {
-                    if (!((String) value).isEmpty()) {
+                    if (!((String) value).isEmpty() && !value.equals("%%")) {
                         sql.WHERE(columnName + " like " + fieldExpression);
                     }
                 } else if (value instanceof Number
