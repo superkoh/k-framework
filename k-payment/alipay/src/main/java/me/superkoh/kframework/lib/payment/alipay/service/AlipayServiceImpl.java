@@ -11,7 +11,7 @@ import com.alipay.api.response.AlipayTradeQueryResponse;
 import me.superkoh.kframework.core.utils.DateTimeHelper;
 import me.superkoh.kframework.lib.payment.alipay.sdk.config.AlipayConfig;
 import me.superkoh.kframework.lib.payment.alipay.sdk.util.AlipaySubmit;
-import me.superkoh.kframework.lib.payment.common.config.PaymentAccountInfo;
+import me.superkoh.kframework.lib.payment.common.config.PaymentAccountInfoInterface;
 import me.superkoh.kframework.lib.payment.common.service.ThirdPartyPayService;
 import me.superkoh.kframework.lib.payment.common.service.info.*;
 import me.superkoh.kframework.lib.payment.common.type.PaymentChannel;
@@ -39,7 +39,7 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
     private static final Logger logger = LoggerFactory.getLogger("paymentLogger");
 
     @Override
-    public PaymentPrepayInfo getPrepayInfo(ThirdPartyRequestPayInfo requestPayInfo, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentPrepayInfo getPrepayInfo(ThirdPartyRequestPayInfo requestPayInfo, PaymentAccountInfoInterface accountInfo) throws Exception {
         String amount = String.format("%.2f", requestPayInfo.getAmount() / 100.0);
         String timeout = getTimeoutString(requestPayInfo);
         String tradeNo = tradePrefix + requestPayInfo.getTradeId();
@@ -59,7 +59,7 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
     }
 
     @Override
-    public PaymentStatusInfo queryPayResult(String tradeId, Long tradeTime, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentStatusInfo queryPayResult(String tradeId, Long tradeTime, PaymentAccountInfoInterface accountInfo) throws Exception {
         tradeId = tradePrefix + tradeId;
         AlipayTradeQueryResponse response = queryAlipayWapPay(tradeId, accountInfo);
         PaymentStatusInfo statusInfo = new PaymentStatusInfo();
@@ -112,7 +112,7 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
     }
 
     @Override
-    public PaymentStatusInfo closeUnfinishedPay(String tradeId, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentStatusInfo closeUnfinishedPay(String tradeId, PaymentAccountInfoInterface accountInfo) throws Exception {
         tradeId = tradePrefix + tradeId;
         AlipayTradeCloseResponse response = closeAlipayUnfinishedPay(tradeId, accountInfo);
         PaymentStatusInfo statusInfo = new PaymentStatusInfo();
@@ -143,7 +143,7 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
     }
 
     @Override
-    public PaymentNotifyProcessInfo handleBackNotify(String encoding, Map<String, String> notifyParams, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentNotifyProcessInfo handleBackNotify(String encoding, Map<String, String> notifyParams, PaymentAccountInfoInterface accountInfo) throws Exception {
         PaymentNotifyProcessInfo notifyStatus = new PaymentNotifyProcessInfo();
         notifyStatus.setResponseEncoding("UTF-8");
         notifyStatus.setResponseContentType("text/html;charset=UTF-8");
@@ -211,7 +211,7 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
     }
 
     @Override
-    public PaymentNotifyProcessInfo handleFrontNotify(String encoding, Map<String, String> notifyParams, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentNotifyProcessInfo handleFrontNotify(String encoding, Map<String, String> notifyParams, PaymentAccountInfoInterface accountInfo) throws Exception {
         return null;
     }
 
@@ -226,12 +226,12 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
     }
 
     @Override
-    public PaymentStatusInfo queryRefundState(String tradeId, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentStatusInfo queryRefundState(String tradeId, PaymentAccountInfoInterface accountInfo) throws Exception {
         return null;
     }
 
     @Override
-    public PaymentStatusInfo applyRefund(String tradeId, int totalFee, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentStatusInfo applyRefund(String tradeId, int totalFee, PaymentAccountInfoInterface accountInfo) throws Exception {
         return null;
     }
 
@@ -258,7 +258,7 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
         return new AlipayPrepayInfo(form);
     }
 
-    private AlipayPrepayInfo getAlipayWapPayInfo(String tradeNo, String amount, String timeout, String productName, String productDesc, PaymentAccountInfo accountInfo)
+    private AlipayPrepayInfo getAlipayWapPayInfo(String tradeNo, String amount, String timeout, String productName, String productDesc, PaymentAccountInfoInterface accountInfo)
             throws Exception {
         AlipayTradeWapPayRequest alipayRequest = new AlipayTradeWapPayRequest();
         alipayRequest.setReturnUrl(accountInfo.getAliReturnUrl());
@@ -277,7 +277,7 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
         return new AlipayPrepayInfo(form);
     }
 
-    private AlipayTradeQueryResponse queryAlipayWapPay(String tradeNo, PaymentAccountInfo accountInfo) throws Exception {
+    private AlipayTradeQueryResponse queryAlipayWapPay(String tradeNo, PaymentAccountInfoInterface accountInfo) throws Exception {
         AlipayTradeQueryRequest queryRequest = new AlipayTradeQueryRequest();
         queryRequest.setBizContent("{" +
                 "\"out_trade_no\":\"" + tradeNo + "\"" +
@@ -285,7 +285,7 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
        return getAlipayClient(accountInfo).execute(queryRequest);
     }
 
-    private AlipayTradeCloseResponse closeAlipayUnfinishedPay(String tradeNo, PaymentAccountInfo accountInfo) throws Exception {
+    private AlipayTradeCloseResponse closeAlipayUnfinishedPay(String tradeNo, PaymentAccountInfoInterface accountInfo) throws Exception {
         AlipayTradeCloseRequest closeRequest = new AlipayTradeCloseRequest();
         closeRequest.setBizContent("{" +
                 "\"out_trade_no\":\"" + tradeNo + "\"," +
@@ -301,7 +301,7 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
         return String.format("%dm", leftTime);
     }
 
-    private AlipayConfig extraAlipayConfig(PaymentAccountInfo accountInfo) {
+    private AlipayConfig extraAlipayConfig(PaymentAccountInfoInterface accountInfo) {
         AlipayConfig config = new AlipayConfig();
         config.setPartnerId(accountInfo.getAliPartnerId());
         config.setSellerId(accountInfo.getAliPartnerId());
@@ -312,7 +312,7 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
         return config;
     }
 
-    private AlipayClient getAlipayClient(PaymentAccountInfo accountInfo) {
+    private AlipayClient getAlipayClient(PaymentAccountInfoInterface accountInfo) {
         return new DefaultAlipayClient(accountInfo.getAliServerUrl(),
                 accountInfo.getAliAppId(), accountInfo.getAliAppPrivateKey(),
                 "json", "utf-8", accountInfo.getAliAppPublicKey());

@@ -24,7 +24,7 @@ subprojects {
     publishing {
         repositories {
             maven {
-                url "file:///Users/KOH/Projects/superkoh/maven"
+                url "file:///Users/zhangyh/workspace/goodtalk-comp/maven"
             }
         }
     }

@@ -2,7 +2,7 @@ package me.superkoh.kframework.lib.payment.wechat.service;
 
 import me.superkoh.kframework.core.exception.KException;
 import me.superkoh.kframework.core.utils.DateTimeHelper;
-import me.superkoh.kframework.lib.payment.common.config.PaymentAccountInfo;
+import me.superkoh.kframework.lib.payment.common.config.PaymentAccountInfoInterface;
 import me.superkoh.kframework.lib.payment.common.service.ThirdPartyPayService;
 import me.superkoh.kframework.lib.payment.common.service.info.*;
 import me.superkoh.kframework.lib.payment.common.type.PaymentChannel;
@@ -50,7 +50,7 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
     }
 
     @Override
-    public PaymentPrepayInfo getPrepayInfo(ThirdPartyRequestPayInfo requestPayInfo, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentPrepayInfo getPrepayInfo(ThirdPartyRequestPayInfo requestPayInfo, PaymentAccountInfoInterface accountInfo) throws Exception {
         String outTradeNo = tradePrefix + requestPayInfo.getTradeId();
         String startTime = DateTimeHelper.stringOfCurrentTimeAtChina("yyyyMMddHHmmss");
         String expiredTime = DateTimeHelper.stringOfTimestampAtChina(maxExpireTime(requestPayInfo), "yyyyMMddHHmmss");
@@ -71,7 +71,7 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
     }
 
     @Override
-    public PaymentStatusInfo queryPayResult(String tradeId, Long tradeTime, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentStatusInfo queryPayResult(String tradeId, Long tradeTime, PaymentAccountInfoInterface accountInfo) throws Exception {
         tradeId = tradePrefix + tradeId;
         PaymentStatusInfo statusInfo = new PaymentStatusInfo();
         statusInfo.setTradeIdWithPrefix(tradeId, tradePrefix);
@@ -135,7 +135,7 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
     }
 
     @Override
-    public PaymentStatusInfo closeUnfinishedPay(String tradeId, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentStatusInfo closeUnfinishedPay(String tradeId, PaymentAccountInfoInterface accountInfo) throws Exception {
         tradeId = tradePrefix + tradeId;
         PaymentStatusInfo statusInfo = new PaymentStatusInfo();
         statusInfo.setTradeIdWithPrefix(tradeId, tradePrefix);
@@ -187,7 +187,7 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
     }
 
     @Override
-    public PaymentStatusInfo queryRefundState(String tradeId, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentStatusInfo queryRefundState(String tradeId, PaymentAccountInfoInterface accountInfo) throws Exception {
         tradeId = tradePrefix + tradeId;
         PaymentStatusInfo statusInfo = new PaymentStatusInfo();
         statusInfo.setTradeIdWithPrefix(tradeId, tradePrefix);
@@ -229,7 +229,7 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
     }
 
     @Override
-    public PaymentStatusInfo applyRefund(String tradeId, int totalFee, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentStatusInfo applyRefund(String tradeId, int totalFee, PaymentAccountInfoInterface accountInfo) throws Exception {
         tradeId = tradePrefix + tradeId;
         PaymentStatusInfo statusInfo = new PaymentStatusInfo();
         statusInfo.setTradeIdWithPrefix(tradeId, tradePrefix);
@@ -262,7 +262,7 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
     }
 
     @Override
-    public PaymentNotifyProcessInfo handleBackNotify(String encoding, Map<String, String> notifyParams, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentNotifyProcessInfo handleBackNotify(String encoding, Map<String, String> notifyParams, PaymentAccountInfoInterface accountInfo) throws Exception {
         PaymentNotifyProcessInfo notifyStatus = new PaymentNotifyProcessInfo();
         notifyStatus.setResponseEncoding("UTF-8");
         notifyStatus.setResponseContentType("text/html;charset=UTF-8");
@@ -311,7 +311,7 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
     }
 
     @Override
-    public PaymentNotifyProcessInfo handleFrontNotify(String encoding, Map<String, String> notifyParams, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentNotifyProcessInfo handleFrontNotify(String encoding, Map<String, String> notifyParams, PaymentAccountInfoInterface accountInfo) throws Exception {
         return null;
     }
 
@@ -495,7 +495,7 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
         return Math.max(5 * 60, leftTime) + currentTime;
     }
 
-    private WXPerAppConfig extractWxConfig(PaymentAccountInfo accountInfo) {
+    private WXPerAppConfig extractWxConfig(PaymentAccountInfoInterface accountInfo) {
         WXPerAppConfig appConfig = new WXPerAppConfig();
         appConfig.setAppID(accountInfo.getWxAppId());
         appConfig.setAppSecret(accountInfo.getWxAppSecret());

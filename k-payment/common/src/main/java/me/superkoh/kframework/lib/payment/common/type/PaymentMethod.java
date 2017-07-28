@@ -9,8 +9,10 @@ public enum PaymentMethod {
     UNION_WAP(PaymentChannel.WAP),
     WEIXIN_JSAPI(PaymentChannel.WEIXIN),
     WEIXIN_NATIVE(PaymentChannel.WEB),
+    WEIXIN_APP(PaymentChannel.APP),
     ALIPAY_DIRECT(PaymentChannel.WEB),
     ALIPAY_WAP(PaymentChannel.WAP),
+    ALIPAY_APP(PaymentChannel.APP),
     OFFLINE_TRANSFER(PaymentChannel.OFFLINE);
 
     private PaymentChannel channel;

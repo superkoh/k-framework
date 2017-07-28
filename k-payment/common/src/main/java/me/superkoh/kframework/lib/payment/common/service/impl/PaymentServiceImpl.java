@@ -2,7 +2,7 @@ package me.superkoh.kframework.lib.payment.common.service.impl;
 
 import me.superkoh.kframework.core.exception.KException;
 import me.superkoh.kframework.core.utils.ACU;
-import me.superkoh.kframework.lib.payment.common.config.PaymentAccountInfo;
+import me.superkoh.kframework.lib.payment.common.config.PaymentAccountInfoInterface;
 import me.superkoh.kframework.lib.payment.common.model.domain.PaymentExceptionLog;
 import me.superkoh.kframework.lib.payment.common.model.domain.PaymentTransaction;
 import me.superkoh.kframework.lib.payment.common.model.mapper.PaymentExceptionLogMapper;
@@ -56,7 +56,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public PaymentPrepayInfo getPaymentPrepayInfo(PrepayRequestInfo reqInfo, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentPrepayInfo getPaymentPrepayInfo(PrepayRequestInfo reqInfo, PaymentAccountInfoInterface accountInfo) throws Exception {
         if (reqInfo.getPayMethod().equals(PaymentMethod.OFFLINE_TRANSFER)) {
             return startOfflineTransfer(reqInfo, accountInfo);
         } else {
@@ -65,7 +65,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public PaymentStatusInfo queryPaymentState(PaymentTransactionInfo transactionInfo, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentStatusInfo queryPaymentState(PaymentTransactionInfo transactionInfo, PaymentAccountInfoInterface accountInfo) throws Exception {
         ThirdPartyPayService payService = getPayServiceByMethod(transactionInfo.getPaymentMethod());
         PaymentStatusInfo statusInfo = payService.queryPayResult(transactionInfo.getId().toString(),
                 transactionInfo.getTransactionTime(), accountInfo);
@@ -81,7 +81,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public PaymentStatusInfo closePaymentTransaction(PaymentTransactionInfo transactionInfo, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentStatusInfo closePaymentTransaction(PaymentTransactionInfo transactionInfo, PaymentAccountInfoInterface accountInfo) throws Exception {
         ThirdPartyPayService payService = getPayServiceByMethod(transactionInfo.getPaymentMethod());
         PaymentStatusInfo statusInfo =  payService.closeUnfinishedPay(transactionInfo.getId().toString(), accountInfo);
         if (statusInfo.getStatus().equals(PaymentStatus.NOT_PAY) && statusInfo.getUnionOrderNotExist()) {
@@ -129,12 +129,12 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void cancelExpiredOrder(String orderId) throws KException {
+    public void cancelExpiredOrder(String orderId) throws Exception {
         getOrderCoordinator().cancelOrder(orderId);
     }
 
     @Override
-    public PaymentNotifyProcessInfo handleUnionpayBackNotify(String encoding, Map<String, String> notifyParams, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentNotifyProcessInfo handleUnionpayBackNotify(String encoding, Map<String, String> notifyParams, PaymentAccountInfoInterface accountInfo) throws Exception {
         ThirdPartyPayService unionService = getPayServiceByMethod(PaymentMethod.UNION_PC);
         PaymentNotifyProcessInfo notifyStatus = unionService.handleBackNotify(encoding, notifyParams, accountInfo);
         try {
@@ -146,14 +146,14 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public PaymentNotifyProcessInfo handleUnionpayFrontNotify(String encoding, Map<String, String> notifyParams, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentNotifyProcessInfo handleUnionpayFrontNotify(String encoding, Map<String, String> notifyParams, PaymentAccountInfoInterface accountInfo) throws Exception {
         ThirdPartyPayService unionService = getPayServiceByMethod(PaymentMethod.UNION_PC);
         PaymentNotifyProcessInfo notifyStatus = unionService.handleFrontNotify(encoding, notifyParams, accountInfo);
         return notifyStatus;
     }
 
     @Override
-    public PaymentNotifyProcessInfo handleWxpayBackNotify(String notifyString, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentNotifyProcessInfo handleWxpayBackNotify(String notifyString, PaymentAccountInfoInterface accountInfo) throws Exception {
         ThirdPartyPayService wxService = getPayServiceByMethod(PaymentMethod.WEIXIN_JSAPI);
         Map<String, String> notifyParams = new HashMap<>();
         notifyParams.put("notifyStr", notifyString);
@@ -167,7 +167,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public PaymentNotifyProcessInfo handleWxpayFrontNotify(String notifyString, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentNotifyProcessInfo handleWxpayFrontNotify(String notifyString, PaymentAccountInfoInterface accountInfo) throws Exception {
         ThirdPartyPayService wxService = getPayServiceByMethod(PaymentMethod.WEIXIN_JSAPI);
         Map<String, String> notifyParams = new HashMap<>();
         notifyParams.put("notifyStr", notifyString);
@@ -176,7 +176,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public PaymentNotifyProcessInfo handleAlipayBackNotify(Map<String, String> notifyParams, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentNotifyProcessInfo handleAlipayBackNotify(Map<String, String> notifyParams, PaymentAccountInfoInterface accountInfo) throws Exception {
         ThirdPartyPayService alipayService = getPayServiceByMethod(PaymentMethod.ALIPAY_WAP);
         PaymentNotifyProcessInfo notifyStatus = alipayService.handleBackNotify(null, notifyParams, accountInfo);
         try {
@@ -188,13 +188,13 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public PaymentNotifyProcessInfo handleAlipayFrontNotify(Map<String, String> notifyParams, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentNotifyProcessInfo handleAlipayFrontNotify(Map<String, String> notifyParams, PaymentAccountInfoInterface accountInfo) throws Exception {
         ThirdPartyPayService alipayService = getPayServiceByMethod(PaymentMethod.ALIPAY_WAP);
         PaymentNotifyProcessInfo notifyStatus = alipayService.handleFrontNotify(null, notifyParams, accountInfo);
         return notifyStatus;
     }
 
-    private PaymentPrepayInfo startOfflineTransfer(PrepayRequestInfo reqInfo, PaymentAccountInfo accountInfo) throws KException {
+    private PaymentPrepayInfo startOfflineTransfer(PrepayRequestInfo reqInfo, PaymentAccountInfoInterface accountInfo) throws Exception {
         PaymentOrderInfo orderInfo = getOrderCoordinator().getPaymentOrderInfoById(reqInfo.getOrderId(), reqInfo.getUserId
                 ());
         if (!orderInfo.getOfflineTransfer()) {
@@ -204,7 +204,7 @@ public class PaymentServiceImpl implements PaymentService {
         return new PaymentPrepayInfo();
     }
 
-    private PaymentPrepayInfo startOnlinePayment(PrepayRequestInfo reqInfo, PaymentAccountInfo accountInfo) throws Exception {
+    private PaymentPrepayInfo startOnlinePayment(PrepayRequestInfo reqInfo, PaymentAccountInfoInterface accountInfo) throws Exception {
         ThirdPartyPayService payService = getPayServiceByMethod(reqInfo.getPayMethod());
         PaymentOrderInfo orderInfo = createPaymentTransaction(reqInfo);
         if (null == orderInfo) {
@@ -220,15 +220,17 @@ public class PaymentServiceImpl implements PaymentService {
         switch (method) {
             case UNION_PC:
             case UNION_WAP:
-                payService = (ThirdPartyPayService) ACU.bean("Unionpay");
+                payService = ACU.ctx().getBean("Unionpay", ThirdPartyPayService.class);
                 break;
             case WEIXIN_JSAPI:
             case WEIXIN_NATIVE:
-                payService = (ThirdPartyPayService) ACU.bean("WxPay");
+            case WEIXIN_APP:
+                payService = ACU.ctx().getBean("WxPay", ThirdPartyPayService.class);
                 break;
             case ALIPAY_DIRECT:
             case ALIPAY_WAP:
-                payService = (ThirdPartyPayService) ACU.bean("Alipay");
+            case ALIPAY_APP:
+                payService = ACU.ctx().getBean("Alipay", ThirdPartyPayService.class);
                 break;
         }
 
@@ -238,7 +240,7 @@ public class PaymentServiceImpl implements PaymentService {
         return payService;
     }
 
-    private PaymentOrderInfo createPaymentTransaction(PrepayRequestInfo reqInfo) throws KException {
+    private PaymentOrderInfo createPaymentTransaction(PrepayRequestInfo reqInfo) throws Exception {
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
         def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
         def.setIsolationLevel(TransactionDefinition.ISOLATION_DEFAULT);
@@ -283,7 +285,7 @@ public class PaymentServiceImpl implements PaymentService {
         return orderInfo;
     }
 
-    private void updateTransactionOrderStatus(PaymentStatusInfo statusInfo) throws KException {
+    private void updateTransactionOrderStatus(PaymentStatusInfo statusInfo) throws Exception {
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
         def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
         def.setIsolationLevel(TransactionDefinition.ISOLATION_DEFAULT);

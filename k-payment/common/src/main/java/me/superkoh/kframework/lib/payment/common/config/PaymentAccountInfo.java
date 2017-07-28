@@ -4,7 +4,7 @@ package me.superkoh.kframework.lib.payment.common.config;
  * 支付账号配置信息
  * Created by zhangyh on 2017/5/23.
  */
-public class PaymentAccountInfo {
+public class PaymentAccountInfo implements PaymentAccountInfoInterface {
     /**
      * 是否测试环境
      */
@@ -104,7 +104,7 @@ public class PaymentAccountInfo {
      */
     private String unionSingleMode;
 
-
+    @Override
     public Boolean getIsDebugMode() {
         return isDebugMode;
     }
@@ -113,6 +113,7 @@ public class PaymentAccountInfo {
         this.isDebugMode = isDebugMode;
     }
 
+    @Override
     public String getWxAppId() {
         return wxAppId;
     }
@@ -121,6 +122,7 @@ public class PaymentAccountInfo {
         this.wxAppId = wxAppId;
     }
 
+    @Override
     public String getWxAppSecret() {
         return wxAppSecret;
     }
@@ -129,6 +131,7 @@ public class PaymentAccountInfo {
         this.wxAppSecret = wxAppSecret;
     }
 
+    @Override
     public String getWxPaySecret() {
         return wxPaySecret;
     }
@@ -137,6 +140,7 @@ public class PaymentAccountInfo {
         this.wxPaySecret = wxPaySecret;
     }
 
+    @Override
     public String getWxMchId() {
         return wxMchId;
     }
@@ -145,6 +149,7 @@ public class PaymentAccountInfo {
         this.wxMchId = wxMchId;
     }
 
+    @Override
     public String getWxCertLocalPath() {
         return wxCertLocalPath;
     }
@@ -153,6 +158,7 @@ public class PaymentAccountInfo {
         this.wxCertLocalPath = wxCertLocalPath;
     }
 
+    @Override
     public String getWxCertPassword() {
         return wxCertPassword;
     }
@@ -161,6 +167,7 @@ public class PaymentAccountInfo {
         this.wxCertPassword = wxCertPassword;
     }
 
+    @Override
     public String getAliPartnerId() {
         return aliPartnerId;
     }
@@ -169,6 +176,7 @@ public class PaymentAccountInfo {
         this.aliPartnerId = aliPartnerId;
     }
 
+    @Override
     public String getAliAppId() {
         return aliAppId;
     }
@@ -177,6 +185,7 @@ public class PaymentAccountInfo {
         this.aliAppId = aliAppId;
     }
 
+    @Override
     public String getAliAppPrivateKey() {
         return aliAppPrivateKey;
     }
@@ -185,6 +194,7 @@ public class PaymentAccountInfo {
         this.aliAppPrivateKey = aliAppPrivateKey;
     }
 
+    @Override
     public String getAliAppPublicKey() {
         return aliAppPublicKey;
     }
@@ -193,6 +203,7 @@ public class PaymentAccountInfo {
         this.aliAppPublicKey = aliAppPublicKey;
     }
 
+    @Override
     public String getAliServerUrl() {
         return aliServerUrl;
     }
@@ -201,6 +212,7 @@ public class PaymentAccountInfo {
         this.aliServerUrl = aliServerUrl;
     }
 
+    @Override
     public String getAliReturnUrl() {
         return aliReturnUrl;
     }
@@ -209,6 +221,7 @@ public class PaymentAccountInfo {
         this.aliReturnUrl = aliReturnUrl;
     }
 
+    @Override
     public String getAliNotifyUrl() {
         return aliNotifyUrl;
     }
@@ -217,6 +230,7 @@ public class PaymentAccountInfo {
         this.aliNotifyUrl = aliNotifyUrl;
     }
 
+    @Override
     public String getUnionMerId() {
         return unionMerId;
     }
@@ -225,6 +239,7 @@ public class PaymentAccountInfo {
         this.unionMerId = unionMerId;
     }
 
+    @Override
     public String getUnionFrontUrl() {
         return unionFrontUrl;
     }
@@ -233,6 +248,7 @@ public class PaymentAccountInfo {
         this.unionFrontUrl = unionFrontUrl;
     }
 
+    @Override
     public String getUnionBackUrl() {
         return unionBackUrl;
     }
@@ -241,6 +257,7 @@ public class PaymentAccountInfo {
         this.unionBackUrl = unionBackUrl;
     }
 
+    @Override
     public String getUnionSignCertPath() {
         return unionSignCertPath;
     }
@@ -249,6 +266,7 @@ public class PaymentAccountInfo {
         this.unionSignCertPath = unionSignCertPath;
     }
 
+    @Override
     public String getUnionSignCertPwd() {
         return unionSignCertPwd;
     }
@@ -257,6 +275,7 @@ public class PaymentAccountInfo {
         this.unionSignCertPwd = unionSignCertPwd;
     }
 
+    @Override
     public String getUnionSignCertType() {
         return unionSignCertType;
     }
@@ -265,6 +284,7 @@ public class PaymentAccountInfo {
         this.unionSignCertType = unionSignCertType;
     }
 
+    @Override
     public String getUnionValidateCertDir() {
         return unionValidateCertDir;
     }
@@ -273,6 +293,7 @@ public class PaymentAccountInfo {
         this.unionValidateCertDir = unionValidateCertDir;
     }
 
+    @Override
     public String getUnionEncryptCertPath() {
         return unionEncryptCertPath;
     }
@@ -281,6 +302,7 @@ public class PaymentAccountInfo {
         this.unionEncryptCertPath = unionEncryptCertPath;
     }
 
+    @Override
     public String getUnionSingleMode() {
         return unionSingleMode;
     }

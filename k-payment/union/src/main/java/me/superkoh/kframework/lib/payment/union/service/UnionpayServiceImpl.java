@@ -1,6 +1,6 @@
 package me.superkoh.kframework.lib.payment.union.service;
 
-import me.superkoh.kframework.lib.payment.common.config.PaymentAccountInfo;
+import me.superkoh.kframework.lib.payment.common.config.PaymentAccountInfoInterface;
 import me.superkoh.kframework.lib.payment.common.service.ThirdPartyPayService;
 import me.superkoh.kframework.lib.payment.common.service.info.*;
 import me.superkoh.kframework.lib.payment.common.type.PaymentChannel;
@@ -33,7 +33,7 @@ public class UnionpayServiceImpl implements ThirdPartyPayService {
     private static final Logger logger = LoggerFactory.getLogger("paymentLogger");
 
     @Override
-    public PaymentPrepayInfo getPrepayInfo(ThirdPartyRequestPayInfo requestPayInfo, PaymentAccountInfo accountInfo) {
+    public PaymentPrepayInfo getPrepayInfo(ThirdPartyRequestPayInfo requestPayInfo, PaymentAccountInfoInterface accountInfo) {
         SDKConfig config = extractSDKConfig(accountInfo);
 
         String tradeId = tradePrefix + requestPayInfo.getTradeId();
@@ -51,7 +51,7 @@ public class UnionpayServiceImpl implements ThirdPartyPayService {
     }
 
     @Override
-    public PaymentStatusInfo queryPayResult(String tradeId, Long tradeTime, PaymentAccountInfo accountInfo) {
+    public PaymentStatusInfo queryPayResult(String tradeId, Long tradeTime, PaymentAccountInfoInterface accountInfo) {
         SDKConfig config = extractSDKConfig(accountInfo);
         tradeId = tradePrefix + tradeId;
         String txnTime = UnionpayUtils.getTimeString(tradeTime);
@@ -60,7 +60,7 @@ public class UnionpayServiceImpl implements ThirdPartyPayService {
     }
 
     @Override
-    public PaymentStatusInfo closeUnfinishedPay(String tradeId, PaymentAccountInfo accountInfo) {
+    public PaymentStatusInfo closeUnfinishedPay(String tradeId, PaymentAccountInfoInterface accountInfo) {
         SDKConfig config = extractSDKConfig(accountInfo);
         tradeId = tradePrefix + tradeId;
         String txnTime = UnionpayUtils.getTimeString(Instant.now().getEpochSecond());
@@ -69,7 +69,7 @@ public class UnionpayServiceImpl implements ThirdPartyPayService {
     }
 
     @Override
-    public PaymentNotifyProcessInfo handleBackNotify(String encoding, Map<String, String> notifyParams, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentNotifyProcessInfo handleBackNotify(String encoding, Map<String, String> notifyParams, PaymentAccountInfoInterface accountInfo) throws Exception {
         SDKConfig config = extractSDKConfig(accountInfo);
         PaymentNotifyProcessInfo notifyStatus = new PaymentNotifyProcessInfo();
         logger.info("收到银联后台通知" + notifyParams.toString());
@@ -102,7 +102,7 @@ public class UnionpayServiceImpl implements ThirdPartyPayService {
     }
 
     @Override
-    public PaymentNotifyProcessInfo handleFrontNotify(String encoding, Map<String, String> notifyParams, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentNotifyProcessInfo handleFrontNotify(String encoding, Map<String, String> notifyParams, PaymentAccountInfoInterface accountInfo) throws Exception {
         SDKConfig config = extractSDKConfig(accountInfo);
         handlePayResultFrontNotify(encoding, notifyParams, config);
         return new PaymentNotifyProcessInfo();
@@ -114,12 +114,12 @@ public class UnionpayServiceImpl implements ThirdPartyPayService {
     }
 
     @Override
-    public PaymentStatusInfo queryRefundState(String tradeId, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentStatusInfo queryRefundState(String tradeId, PaymentAccountInfoInterface accountInfo) throws Exception {
         return null;
     }
 
     @Override
-    public PaymentStatusInfo applyRefund(String tradeId, int totalFee, PaymentAccountInfo accountInfo) throws Exception {
+    public PaymentStatusInfo applyRefund(String tradeId, int totalFee, PaymentAccountInfoInterface accountInfo) throws Exception {
         return null;
     }
 
@@ -463,7 +463,7 @@ public class UnionpayServiceImpl implements ThirdPartyPayService {
         return validateData;
     }
 
-    private SDKConfig extractSDKConfig(PaymentAccountInfo accountInfo) {
+    private SDKConfig extractSDKConfig(PaymentAccountInfoInterface accountInfo) {
         SDKConfig config = new SDKConfig();
         config.setMerchId(accountInfo.getUnionMerId());
         config.setBackUrl(accountInfo.getUnionBackUrl());
