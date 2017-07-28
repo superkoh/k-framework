@@ -62,7 +62,8 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
             WxPrepayInfo wxPrepayInfo = getUnifiedOrderInfoForJsapiPay(appConfig, outTradeNo, requestPayInfo.getAmount(), startTime, expiredTime, productId, requestPayInfo.getProductName(), requestPayInfo.getAuthCode(), requestPayInfo.getOpenId(), requestPayInfo.getUserIp());
             prepayInfo.setWxJsApiPrepay(wxPrepayInfo);
         } else {
-            String payUrl = getUnifiedOrderInfoForNativePay(outTradeNo, requestPayInfo.getAmount(), startTime, expiredTime,
+            WXPerAppConfig appConfig = extractWxConfig(accountInfo);
+            String payUrl = getUnifiedOrderInfoForNativePay(appConfig, outTradeNo, requestPayInfo.getAmount(), startTime, expiredTime,
                     productId, requestPayInfo.getProductName());
             prepayInfo.setWxNativeCodeUrl(payUrl);
         }
@@ -354,11 +355,12 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
         return prepayInfo;
     }
 
-    private String getUnifiedOrderInfoForNativePay(String outTradeNo, int amount, String startTime, String expiredTime,
+    private String getUnifiedOrderInfoForNativePay(WXPerAppConfig wechatInfo, String outTradeNo, int amount,
+                                                   String startTime, String expiredTime,
                                                    String productId, String productName) throws Exception {
-        WXPayData orderReqData = WXPayData.unifiedOrderReqData(null, productName, null, null, outTradeNo, "CNY",
+        WXPayData orderReqData = WXPayData.unifiedOrderReqData(wechatInfo, productName, null, null, outTradeNo, "CNY",
                 amount, Configure.getIP(), startTime, expiredTime, null, "NATIVE", productId, null);
-        WXPayData orderResData = processUnifiedOrderByReqData(orderReqData, null);
+        WXPayData orderResData = processUnifiedOrderByReqData(orderReqData, wechatInfo);
         return (String)orderResData.getValue(WXPayConstants.codeUrlKey);
     }
 
@@ -496,15 +498,8 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
     }
 
     private WXPerAppConfig extractWxConfig(PaymentAccountInfoInterface accountInfo) {
-        WXPerAppConfig appConfig = new WXPerAppConfig();
-        appConfig.setAppID(accountInfo.getWxAppId());
-        appConfig.setAppSecret(accountInfo.getWxAppSecret());
-        appConfig.setKey(accountInfo.getWxPaySecret());
-        appConfig.setMchID(accountInfo.getWxMchId());
-        appConfig.setCertLocalPath(accountInfo.getWxCertLocalPath());
-        appConfig.setCertPassword(accountInfo.getWxCertPassword());
         // TODO: attachInfo怎么设置?
-        return appConfig;
+        return new WXPerAppConfig(accountInfo);
     }
 
     public void setNotifyUrl(String notifyUrl) {

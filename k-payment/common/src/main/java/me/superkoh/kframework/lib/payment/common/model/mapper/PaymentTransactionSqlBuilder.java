@@ -2,7 +2,10 @@ package me.superkoh.kframework.lib.payment.common.model.mapper;
 
 import me.superkoh.kframework.lib.db.mybatis.builder.AbstractCommonSqlBuilder;
 import me.superkoh.kframework.lib.payment.common.model.config.PaymentDbProperties;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.jdbc.SQL;
+
+import java.util.List;
 
 /**
  * 交易sql builder
@@ -14,7 +17,7 @@ public class PaymentTransactionSqlBuilder extends AbstractCommonSqlBuilder {
         return PaymentDbProperties.PAYMENT_TRADE_TABLE;
     }
 
-    public String updateToNeedCloseByOrderId() {
+    public String updateToNeedCloseByOrderId(@Param("orderId") String orderId, @Param("tradeId") Integer tradeId) {
         return new SQL()
                 .UPDATE(getTableName())
                 .SET("need_close=1")
@@ -22,30 +25,30 @@ public class PaymentTransactionSqlBuilder extends AbstractCommonSqlBuilder {
                 .WHERE("id!=#{tradeId}").toString();
     }
 
-    public String updateToNotPay() {
+    public String updateToNotPay(@Param("orderId") String orderId, @Param("payMethod") String payMethod, @Param("time") Long time, @Param("status") String status) {
         return new SQL()
                 .UPDATE(getTableName())
                 .SET("status=#{status}")
                 .SET("transaction_time=#{time}")
                 .WHERE("order_id=#{orderId}")
                 .WHERE("payment_method=#{payMethod}")
-                .WHERE("status!=SUCCESS")
-                .WHERE("status!=CLOSED").toString();
+                .WHERE("status!='SUCCESS'")
+                .WHERE("status!='CLOSED'").toString();
     }
 
-    public String selectByPrimaryKey() {
+    public String selectByPrimaryKey(Integer id) {
         return new SQL()
                 .SELECT("*")
                 .FROM(getTableName())
                 .WHERE("id=#{id}").toString();
     }
 
-    public String selectByOrderIdAndPayMethod() {
+    public String selectByOrderIdAndPayMethod(@Param("orderId") String orderId, @Param("payMethod") String payMethod) {
         return new SQL()
                 .SELECT("*")
                 .FROM(getTableName())
                 .WHERE("order_id=#{orderId}")
-                .WHERE("payment_method=#{paymentMethod}").toString();
+                .WHERE("payment_method=#{payMethod}").toString();
     }
 
     public String selectNeedCloseTrades() {
@@ -53,18 +56,18 @@ public class PaymentTransactionSqlBuilder extends AbstractCommonSqlBuilder {
                 .SELECT("*")
                 .FROM(getTableName())
                 .WHERE("need_close=1")
-                .WHERE("status!=CLOSED")
-                .WHERE("status!=SUCCESS").toString();
+                .WHERE("status!='CLOSED'")
+                .WHERE("status!='SUCCESS'").toString();
     }
 
-    public String selectExpiredTrades() {
+    public String selectExpiredTrades(List<String> orderIdList) {
         return new SQL()
                 .SELECT("*")
                 .FROM(getTableName())
                 .WHERE("order_id IN #{orderIdList}").toString();
     }
 
-    public String selectNeedQueryTrades() {
+    public String selectNeedQueryTrades(@Param("maxTime") Long maxTime, @Param("minTime") Long minTime, @Param("status") String status) {
         return new SQL()
                 .SELECT("*")
                 .FROM(getTableName())

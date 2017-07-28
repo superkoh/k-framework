@@ -1,5 +1,7 @@
 package me.superkoh.kframework.lib.payment.wechat.sdk.common;
 
+import me.superkoh.kframework.lib.payment.common.config.PaymentAccountInfoInterface;
+
 /**
  * Created by zhangyh on 2017/3/2.
  */
@@ -29,6 +31,15 @@ public class WXPerAppConfig {
 
     //HTTPS证书密码，默认密码等于商户号MCHID
     private String certPassword = "";
+
+    public WXPerAppConfig(PaymentAccountInfoInterface accountInfo) {
+        this.key = accountInfo.getWxPaySecret();
+        this.appID = accountInfo.getWxAppId();
+        this.appSecret = accountInfo.getWxAppSecret();
+        this.mchID = accountInfo.getWxMchId();
+        this.certLocalPath = accountInfo.getWxCertLocalPath();
+        this.certPassword = accountInfo.getWxCertPassword();
+    }
 
     public String getAttachInfo() {
         return attachInfo;

@@ -259,6 +259,7 @@ public class PaymentServiceImpl implements PaymentService {
                     (checkPOList.get(0).getStatus().equals(PaymentStatus.PAY_ERROR.name()))) {
                 PaymentTransaction transactionPO = new PaymentTransaction();
                 BeanUtils.copyProperties(orderInfo, transactionPO);
+                transactionPO.setOrderId(reqInfo.getOrderId());
                 transactionPO.setNeedClose(false);
                 transactionPO.setStatus(PaymentStatus.NOT_PAY.name());
                 transactionPO.setTimezone("Asia/Shanghai");
