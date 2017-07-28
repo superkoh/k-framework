@@ -34,8 +34,8 @@ public class Configure {
 	//机器IP
 	private static String ip = "";
 
-	//接收微信支付异步通知回调地址
-	private static String notifyUrl = "";
+//	//接收微信支付异步通知回调地址
+	//	private static String notifyUrl = "";
 
 	//以下是几个API的路径：
 	//1）被扫支付API
@@ -103,9 +103,9 @@ public class Configure {
 		Configure.ip = ip;
 	}
 
-	public static void setNotifyUrl(String notifyUrl) {
-		Configure.notifyUrl = notifyUrl;
-	}
+//	public static void setNotifyUrl(String notifyUrl) {
+//		Configure.notifyUrl = notifyUrl;
+//	}
 
 //	public static String getKey(){
 //		return key;
@@ -135,9 +135,9 @@ public class Configure {
 		return ip;
 	}
 
-	public static String getNotifyUrl() {
-		return notifyUrl;
-	}
+//	public static String getNotifyUrl() {
+//		return notifyUrl;
+//	}
 
 	public static void setHttpsRequestClassName(String name){
 		HttpsRequestClassName = name;

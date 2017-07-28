@@ -173,7 +173,7 @@ public class WXPayData {
         WXPayData orderReqData = new WXPayData();
         orderReqData.setValue(WXPayConstants.appIdKey, appConfig.getAppID());
         orderReqData.setValue(WXPayConstants.mchIdKey, appConfig.getMchID());
-        orderReqData.setValue(WXPayConstants.notifyUrlKey, Configure.getNotifyUrl());
+        orderReqData.setValue(WXPayConstants.notifyUrlKey, appConfig.getNotifyUrl());
         orderReqData.setValue(WXPayConstants.deviceInfoKey, "WEB");
 
         orderReqData.setValue(WXPayConstants.bodyKey, body);

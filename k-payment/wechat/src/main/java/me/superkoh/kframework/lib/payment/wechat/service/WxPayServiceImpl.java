@@ -30,10 +30,7 @@ import java.util.Map;
  * Created by zhangyh on 16/9/14.
  */
 @Service(value = "WxPay")
-@ConfigurationProperties(prefix = "jgyuer.service.weixin")
 public class WxPayServiceImpl implements ThirdPartyPayService {
-    private String notifyUrl;
-    private String tradePrefix = "";
 
     private static final Logger logger = LoggerFactory.getLogger("paymentLogger");
 
@@ -46,12 +43,12 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
         } catch (Exception ignored) {
         }
 
-        WXPay.initSDKConfiguration(notifyUrl, myIpAddress);
+        WXPay.initSDKConfiguration(myIpAddress);
     }
 
     @Override
     public PaymentPrepayInfo getPrepayInfo(ThirdPartyRequestPayInfo requestPayInfo, PaymentAccountInfoInterface accountInfo) throws Exception {
-        String outTradeNo = tradePrefix + requestPayInfo.getTradeId();
+        String outTradeNo = accountInfo.getTradePrefix() + requestPayInfo.getTradeId();
         String startTime = DateTimeHelper.stringOfCurrentTimeAtChina("yyyyMMddHHmmss");
         String expiredTime = DateTimeHelper.stringOfTimestampAtChina(maxExpireTime(requestPayInfo), "yyyyMMddHHmmss");
         String productId = requestPayInfo.getProductId();
@@ -73,9 +70,9 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
 
     @Override
     public PaymentStatusInfo queryPayResult(String tradeId, Long tradeTime, PaymentAccountInfoInterface accountInfo) throws Exception {
-        tradeId = tradePrefix + tradeId;
+        tradeId = accountInfo.getTradePrefix() + tradeId;
         PaymentStatusInfo statusInfo = new PaymentStatusInfo();
-        statusInfo.setTradeIdWithPrefix(tradeId, tradePrefix);
+        statusInfo.setTradeIdWithPrefix(tradeId, accountInfo.getTradePrefix());
         WXPerAppConfig appConfig = extractWxConfig(accountInfo);
 
         try {
@@ -96,7 +93,7 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
                 switch ((String)queryResult.getValue(WXPayConstants.tradeStateKey)) {
                     case "SUCCESS":
                         statusInfo.setStatus(PaymentStatus.SUCCESS);
-                        statusInfo.setTradeIdWithPrefix((String) queryResult.getValue(WXPayConstants.outTradeNoKey), tradePrefix);
+                        statusInfo.setTradeIdWithPrefix((String) queryResult.getValue(WXPayConstants.outTradeNoKey), accountInfo.getTradePrefix());
                         statusInfo.setTotalAmount((String) queryResult.getValue(WXPayConstants.totalFeeKey));
                         if (null != queryResult.getValue(WXPayConstants.timeEndKey)) {
                             String timeEndStr = (String) queryResult.getValue(WXPayConstants.timeEndKey);
@@ -137,9 +134,9 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
 
     @Override
     public PaymentStatusInfo closeUnfinishedPay(String tradeId, PaymentAccountInfoInterface accountInfo) throws Exception {
-        tradeId = tradePrefix + tradeId;
+        tradeId = accountInfo.getTradePrefix() + tradeId;
         PaymentStatusInfo statusInfo = new PaymentStatusInfo();
-        statusInfo.setTradeIdWithPrefix(tradeId, tradePrefix);
+        statusInfo.setTradeIdWithPrefix(tradeId, accountInfo.getTradePrefix());
         WXPerAppConfig appConfig = extractWxConfig(accountInfo);
 
         try {
@@ -152,7 +149,7 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
                 switch (errCode) {
                     case "ORDERPAID":
                         statusInfo.setStatus(PaymentStatus.SUCCESS);
-                        statusInfo.setTradeIdWithPrefix((String) closeResult.getValue(WXPayConstants.outTradeNoKey), tradePrefix);
+                        statusInfo.setTradeIdWithPrefix((String) closeResult.getValue(WXPayConstants.outTradeNoKey), accountInfo.getTradePrefix());
                         statusInfo.setTotalAmount((String) closeResult.getValue(WXPayConstants.totalFeeKey));
                         if (null != closeResult.getValue(WXPayConstants.timeEndKey)) {
                             String timeEndStr = (String) closeResult.getValue(WXPayConstants.timeEndKey);
@@ -189,9 +186,9 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
 
     @Override
     public PaymentStatusInfo queryRefundState(String tradeId, PaymentAccountInfoInterface accountInfo) throws Exception {
-        tradeId = tradePrefix + tradeId;
+        tradeId = accountInfo.getTradePrefix() + tradeId;
         PaymentStatusInfo statusInfo = new PaymentStatusInfo();
-        statusInfo.setTradeIdWithPrefix(tradeId, tradePrefix);
+        statusInfo.setTradeIdWithPrefix(tradeId, accountInfo.getTradePrefix());
         WXPerAppConfig appConfig = extractWxConfig(accountInfo);
 
         try {
@@ -231,9 +228,9 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
 
     @Override
     public PaymentStatusInfo applyRefund(String tradeId, int totalFee, PaymentAccountInfoInterface accountInfo) throws Exception {
-        tradeId = tradePrefix + tradeId;
+        tradeId = accountInfo.getTradePrefix() + tradeId;
         PaymentStatusInfo statusInfo = new PaymentStatusInfo();
-        statusInfo.setTradeIdWithPrefix(tradeId, tradePrefix);
+        statusInfo.setTradeIdWithPrefix(tradeId, accountInfo.getTradePrefix());
         WXPerAppConfig appConfig = extractWxConfig(accountInfo);
 
         try {
@@ -297,7 +294,7 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
                     notifyStatus.getStatusInfo().setServiceStatus(PaymentServiceStatus.SUCCESS);
                     notifyStatus.setResponseBody(res.toXml());
                     notifyStatus.getStatusInfo().setStatus(PaymentStatus.SUCCESS);
-                    notifyStatus.getStatusInfo().setTradeIdWithPrefix((String) notifyData.getValue(WXPayConstants.outTradeNoKey), tradePrefix);
+                    notifyStatus.getStatusInfo().setTradeIdWithPrefix((String) notifyData.getValue(WXPayConstants.outTradeNoKey), accountInfo.getTradePrefix());
                     notifyStatus.getStatusInfo().setTotalAmount((String) notifyData.getValue(WXPayConstants.totalFeeKey));
                     if (null != notifyData.getValue(WXPayConstants.timeEndKey)) {
                         String timeEndStr = (String) notifyData.getValue(WXPayConstants.timeEndKey);
@@ -502,19 +499,4 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
         return new WXPerAppConfig(accountInfo);
     }
 
-    public void setNotifyUrl(String notifyUrl) {
-        this.notifyUrl = notifyUrl;
-    }
-
-    public String getNotifyUrl() {
-        return notifyUrl;
-    }
-
-    public String getTradePrefix() {
-        return tradePrefix;
-    }
-
-    public void setTradePrefix(String tradePrefix) {
-        this.tradePrefix = tradePrefix;
-    }
 }

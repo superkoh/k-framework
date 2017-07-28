@@ -9,11 +9,15 @@ public interface PaymentAccountInfoInterface {
 
     Boolean getIsDebugMode();
 
+    String getTradePrefix();
+
     String getWxAppId();
 
     String getWxAppSecret();
 
     String getWxPaySecret();
+
+    String getWxNotifyUrl();
 
     String getWxMchId();
 

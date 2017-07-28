@@ -26,17 +26,14 @@ import java.util.Map;
  * Created by zhangyh on 16/9/8.
  */
 @Service(value = "Unionpay")
-@ConfigurationProperties(prefix = "goodtalk.service.unionpay")
 public class UnionpayServiceImpl implements ThirdPartyPayService {
-    private String tradePrefix = "";
-
     private static final Logger logger = LoggerFactory.getLogger("paymentLogger");
 
     @Override
     public PaymentPrepayInfo getPrepayInfo(ThirdPartyRequestPayInfo requestPayInfo, PaymentAccountInfoInterface accountInfo) {
         SDKConfig config = extractSDKConfig(accountInfo);
 
-        String tradeId = tradePrefix + requestPayInfo.getTradeId();
+        String tradeId =  accountInfo.getTradePrefix() + requestPayInfo.getTradeId();
         String txnTime = UnionpayUtils.getTimeString(requestPayInfo.getTransactionTime());
         String payTimeout = UnionpayUtils.getTimeString(requestPayInfo.getExpireTime());
         String orderTimeout = UnionpayUtils.getTimeString(requestPayInfo.getTransactionTime() + 5 * 60 - 1);
@@ -53,19 +50,19 @@ public class UnionpayServiceImpl implements ThirdPartyPayService {
     @Override
     public PaymentStatusInfo queryPayResult(String tradeId, Long tradeTime, PaymentAccountInfoInterface accountInfo) {
         SDKConfig config = extractSDKConfig(accountInfo);
-        tradeId = tradePrefix + tradeId;
+        tradeId =  accountInfo.getTradePrefix() + tradeId;
         String txnTime = UnionpayUtils.getTimeString(tradeTime);
         Map<String, String> queryResult = queryPayResultByTradeId(tradeId, txnTime, config);
-        return parseUnionpayResponse(tradeId, queryResult, config);
+        return parseUnionpayResponse(tradeId, accountInfo.getTradePrefix(), queryResult, config);
     }
 
     @Override
     public PaymentStatusInfo closeUnfinishedPay(String tradeId, PaymentAccountInfoInterface accountInfo) {
         SDKConfig config = extractSDKConfig(accountInfo);
-        tradeId = tradePrefix + tradeId;
+        tradeId =  accountInfo.getTradePrefix() + tradeId;
         String txnTime = UnionpayUtils.getTimeString(Instant.now().getEpochSecond());
         Map<String, String> queryResult = queryPayResultByTradeId(tradeId, txnTime, config);
-        return parseUnionpayResponse(tradeId, queryResult, config);
+        return parseUnionpayResponse(tradeId, accountInfo.getTradePrefix(), queryResult, config);
     }
 
     @Override
@@ -90,7 +87,7 @@ public class UnionpayServiceImpl implements ThirdPartyPayService {
             } else {
                 notifyStatus.getStatusInfo().setServiceStatus(PaymentServiceStatus.SUCCESS);
                 notifyStatus.getStatusInfo().setStatus(PaymentStatus.SUCCESS);
-                notifyStatus.getStatusInfo().setTradeIdWithPrefix(orderId, tradePrefix);
+                notifyStatus.getStatusInfo().setTradeIdWithPrefix(orderId,  accountInfo.getTradePrefix());
                 notifyStatus.getStatusInfo().setTotalAmount(validateData.get("txnAmt"));
                 notifyStatus.getStatusInfo().setPaymentTime(Instant.now().getEpochSecond());
 
@@ -380,7 +377,7 @@ public class UnionpayServiceImpl implements ThirdPartyPayService {
         }
     }
 
-    private PaymentStatusInfo parseUnionpayResponse(String tradeId, Map<String, String> queryResult, SDKConfig config) {
+    private PaymentStatusInfo parseUnionpayResponse(String tradeId, String tradePrefix, Map<String, String> queryResult, SDKConfig config) {
         PaymentStatusInfo statusInfo = new PaymentStatusInfo();
         statusInfo.setTradeIdWithPrefix(tradeId, tradePrefix);
 
@@ -396,7 +393,7 @@ public class UnionpayServiceImpl implements ThirdPartyPayService {
                         //交易成功，更新商户订单状态
                         statusInfo.setServiceStatus(PaymentServiceStatus.SUCCESS);
                         statusInfo.setStatus(PaymentStatus.SUCCESS);
-                        statusInfo.setTradeIdWithPrefix(queryResult.get(SDKConstants.param_orderId), tradePrefix);
+                        statusInfo.setTradeIdWithPrefix(queryResult.get(SDKConstants.param_orderId),  tradePrefix);
                         statusInfo.setTotalAmount(queryResult.get(SDKConstants.param_txnAmt));
                         statusInfo.setPaymentTime(Instant.now().getEpochSecond());
                     } else if ("01".equals(origRespCode)) {
@@ -478,11 +475,4 @@ public class UnionpayServiceImpl implements ThirdPartyPayService {
         return config;
     }
 
-    public String getTradePrefix() {
-        return tradePrefix;
-    }
-
-    public void setTradePrefix(String tradePrefix) {
-        this.tradePrefix = tradePrefix;
-    }
 }

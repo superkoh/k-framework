@@ -15,8 +15,7 @@ public class WXPay {
     /**
      * 初始化SDK依赖的几个关键配置
      */
-    public static void initSDKConfiguration(String notifyUrl, String ip){
-        Configure.setNotifyUrl(notifyUrl);
+    public static void initSDKConfiguration(String ip){
         Configure.setIp(ip);
     }
 

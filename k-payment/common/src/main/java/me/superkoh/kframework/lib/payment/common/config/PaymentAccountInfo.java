@@ -35,6 +35,10 @@ public class PaymentAccountInfo implements PaymentAccountInfoInterface {
      * 微信支付证书文件密码
      */
     private String wxCertPassword;
+    /**
+     * 微信支付回调地址
+     */
+    private String wxNotifyUrl;
 
 
     /**
@@ -105,6 +109,11 @@ public class PaymentAccountInfo implements PaymentAccountInfoInterface {
     private String unionSingleMode;
 
     @Override
+    public String getTradePrefix() {
+        return isDebugMode ? "GTD" : "GTP";
+    }
+
+    @Override
     public Boolean getIsDebugMode() {
         return isDebugMode;
     }
@@ -165,6 +174,15 @@ public class PaymentAccountInfo implements PaymentAccountInfoInterface {
 
     public void setWxCertPassword(String wxCertPassword) {
         this.wxCertPassword = wxCertPassword;
+    }
+
+    @Override
+    public String getWxNotifyUrl() {
+        return wxNotifyUrl;
+    }
+
+    public void setWxNotifyUrl(String wxNotifyUrl) {
+        this.wxNotifyUrl = wxNotifyUrl;
     }
 
     @Override

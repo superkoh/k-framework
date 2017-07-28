@@ -32,17 +32,14 @@ import java.util.Map;
  * Created by zhangyh on 16/9/22.
  */
 @Service(value = "Alipay")
-@ConfigurationProperties(prefix = "goodtalk.service.alipay")
 public class AlipayServiceImpl implements ThirdPartyPayService {
-    private String tradePrefix = "";
-
     private static final Logger logger = LoggerFactory.getLogger("paymentLogger");
 
     @Override
     public PaymentPrepayInfo getPrepayInfo(ThirdPartyRequestPayInfo requestPayInfo, PaymentAccountInfoInterface accountInfo) throws Exception {
         String amount = String.format("%.2f", requestPayInfo.getAmount() / 100.0);
         String timeout = getTimeoutString(requestPayInfo);
-        String tradeNo = tradePrefix + requestPayInfo.getTradeId();
+        String tradeNo = accountInfo.getTradePrefix() + requestPayInfo.getTradeId();
         String productName = requestPayInfo.getProductName();
         String productDesc = requestPayInfo.getProductDesc();
         AlipayPrepayInfo alipayPrepayInfo;
@@ -60,10 +57,10 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
 
     @Override
     public PaymentStatusInfo queryPayResult(String tradeId, Long tradeTime, PaymentAccountInfoInterface accountInfo) throws Exception {
-        tradeId = tradePrefix + tradeId;
+        tradeId =  accountInfo.getTradePrefix() + tradeId;
         AlipayTradeQueryResponse response = queryAlipayWapPay(tradeId, accountInfo);
         PaymentStatusInfo statusInfo = new PaymentStatusInfo();
-        statusInfo.setTradeIdWithPrefix(tradeId, tradePrefix);
+        statusInfo.setTradeIdWithPrefix(tradeId,  accountInfo.getTradePrefix());
 
         if (null == response) {
             statusInfo.setServiceStatus(PaymentServiceStatus.NETWORK_ERROR);
@@ -79,7 +76,7 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
                     statusInfo.setStatus(PaymentStatus.CLOSED);
                     break;
                 case "TRADE_SUCCESS":
-                    statusInfo.setTradeIdWithPrefix(response.getOutTradeNo(), tradePrefix);
+                    statusInfo.setTradeIdWithPrefix(response.getOutTradeNo(),  accountInfo.getTradePrefix());
                     statusInfo.setTotalAmount(response.getTotalAmount());
                     statusInfo.setAmountUnitIsYuan(true);
                     if (null != response.getSendPayDate()) {
@@ -113,10 +110,10 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
 
     @Override
     public PaymentStatusInfo closeUnfinishedPay(String tradeId, PaymentAccountInfoInterface accountInfo) throws Exception {
-        tradeId = tradePrefix + tradeId;
+        tradeId =  accountInfo.getTradePrefix() + tradeId;
         AlipayTradeCloseResponse response = closeAlipayUnfinishedPay(tradeId, accountInfo);
         PaymentStatusInfo statusInfo = new PaymentStatusInfo();
-        statusInfo.setTradeIdWithPrefix(tradeId, tradePrefix);
+        statusInfo.setTradeIdWithPrefix(tradeId,  accountInfo.getTradePrefix());
 
         if (null == response) {
             statusInfo.setServiceStatus(PaymentServiceStatus.NETWORK_ERROR);
@@ -175,7 +172,7 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
 
                 notifyStatus.getStatusInfo().setServiceStatus(PaymentServiceStatus.SUCCESS);
                 notifyStatus.setResponseBody("success");
-                notifyStatus.getStatusInfo().setTradeIdWithPrefix(outTradeNo, tradePrefix);
+                notifyStatus.getStatusInfo().setTradeIdWithPrefix(outTradeNo,  accountInfo.getTradePrefix());
                 notifyStatus.getStatusInfo().setTotalAmount(totalAmount);
                 notifyStatus.getStatusInfo().setAmountUnitIsYuan(true);
 
@@ -316,13 +313,5 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
         return new DefaultAlipayClient(accountInfo.getAliServerUrl(),
                 accountInfo.getAliAppId(), accountInfo.getAliAppPrivateKey(),
                 "json", "utf-8", accountInfo.getAliAppPublicKey());
-    }
-
-    public String getTradePrefix() {
-        return tradePrefix;
-    }
-
-    public void setTradePrefix(String tradePrefix) {
-        this.tradePrefix = tradePrefix;
     }
 }
