@@ -53,13 +53,15 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
         String expiredTime = DateTimeHelper.stringOfTimestampAtChina(maxExpireTime(requestPayInfo), "yyyyMMddHHmmss");
         String productId = requestPayInfo.getProductId();
 
+        WXPerAppConfig appConfig = extractWxConfig(accountInfo);
         PaymentPrepayInfo prepayInfo = new PaymentPrepayInfo();
-        if (requestPayInfo.getChannel().equals(PaymentChannel.WEIXIN)) {
-            WXPerAppConfig appConfig = extractWxConfig(accountInfo);
+        if (requestPayInfo.getChannel().equals(PaymentChannel.APP)) {
+            WxPrepayInfo wxPrepayInfo = getUnifiedOrderInfoForAppPay(appConfig, outTradeNo, requestPayInfo.getAmount(), startTime, expiredTime, productId, requestPayInfo.getProductName(), requestPayInfo.getAuthCode(), requestPayInfo.getOpenId(), requestPayInfo.getUserIp());
+            prepayInfo.setWxAppPrepay(wxPrepayInfo);
+        } else if (requestPayInfo.getChannel().equals(PaymentChannel.WEIXIN)) {
             WxPrepayInfo wxPrepayInfo = getUnifiedOrderInfoForJsapiPay(appConfig, outTradeNo, requestPayInfo.getAmount(), startTime, expiredTime, productId, requestPayInfo.getProductName(), requestPayInfo.getAuthCode(), requestPayInfo.getOpenId(), requestPayInfo.getUserIp());
             prepayInfo.setWxJsApiPrepay(wxPrepayInfo);
         } else {
-            WXPerAppConfig appConfig = extractWxConfig(accountInfo);
             String payUrl = getUnifiedOrderInfoForNativePay(appConfig, outTradeNo, requestPayInfo.getAmount(), startTime, expiredTime,
                     productId, requestPayInfo.getProductName());
             prepayInfo.setWxNativeCodeUrl(payUrl);
@@ -327,6 +329,24 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
         return notifyStatus;
     }
 
+    private WxPrepayInfo getUnifiedOrderInfoForAppPay(WXPerAppConfig wechatInfo, String outTradeNo, int amount, String startTime, String expiredTime, String productId, String productName, String code, String openId, String userIp) throws Exception {
+        WXPayData orderReqData = WXPayData.unifiedOrderReqData(wechatInfo, productName, "", "", outTradeNo, "CNY",
+                amount, userIp, startTime, expiredTime, "", "APP", productId, "");
+        WXPayData orderResData = processUnifiedOrderByReqData(orderReqData, wechatInfo);
+        WXPayData prepayData = WXPayData.prepayData(wechatInfo, (String)orderResData.getValue(WXPayConstants.prepayIdKey));
+
+        WxPrepayInfo prepayInfo = new WxPrepayInfo();
+        prepayInfo.setNonceStr((String)prepayData.getValue(WXPayConstants.prepayNonceStrKey));
+        prepayInfo.setPackageStr((String)prepayData.getValue(WXPayConstants.prepayPackageKey));
+        prepayInfo.setPaySign((String)prepayData.getValue(WXPayConstants.prepaySignKey));
+        prepayInfo.setSignType((String)prepayData.getValue(WXPayConstants.prepaySignTypeKey));
+        prepayInfo.setTimestamp((String)prepayData.getValue(WXPayConstants.prepayTimestampKey));
+        prepayInfo.setPrepayId((String)prepayData.getValue(WXPayConstants.prepayIdKey));
+        prepayInfo.setAppId(wechatInfo.getAppID());
+        prepayInfo.setPartnerId(wechatInfo.getMchID());
+        return prepayInfo;
+    }
+
     private WxPrepayInfo getUnifiedOrderInfoForJsapiPay(WXPerAppConfig wechatInfo, String outTradeNo, int amount, String startTime, String expiredTime, String productId, String productName, String code, String openId, String userIp) throws Exception {
         if ((null == code || code.trim().isEmpty()) && (null == openId || openId.trim().isEmpty())) {
             throw new KException("微信支付授权码不能为空");
@@ -349,6 +369,9 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
         prepayInfo.setPaySign((String)prepayData.getValue(WXPayConstants.prepaySignKey));
         prepayInfo.setSignType((String)prepayData.getValue(WXPayConstants.prepaySignTypeKey));
         prepayInfo.setTimestamp((String)prepayData.getValue(WXPayConstants.prepayTimestampKey));
+        prepayInfo.setPrepayId((String)prepayData.getValue(WXPayConstants.prepayIdKey));
+        prepayInfo.setAppId(wechatInfo.getAppID());
+        prepayInfo.setPartnerId(wechatInfo.getMchID());
         return prepayInfo;
     }
 

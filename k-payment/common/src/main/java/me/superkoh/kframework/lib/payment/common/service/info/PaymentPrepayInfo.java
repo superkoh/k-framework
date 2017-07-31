@@ -7,6 +7,7 @@ public class PaymentPrepayInfo {
     private Integer wechatId;
     private UnionPrepayInfo unionpay;
     private WxPrepayInfo wxJsApiPrepay;
+    private WxPrepayInfo wxAppPrepay;
     private String wxNativeCodeUrl;
     private AlipayPrepayInfo alipay;
 
@@ -32,6 +33,14 @@ public class PaymentPrepayInfo {
 
     public WxPrepayInfo getWxJsApiPrepay() {
         return wxJsApiPrepay;
+    }
+
+    public WxPrepayInfo getWxAppPrepay() {
+        return wxAppPrepay;
+    }
+
+    public void setWxAppPrepay(WxPrepayInfo wxAppPrepay) {
+        this.wxAppPrepay = wxAppPrepay;
     }
 
     public String getWxNativeCodeUrl() {

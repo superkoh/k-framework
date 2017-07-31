@@ -1,11 +1,15 @@
 package me.superkoh.kframework.lib.payment.alipay.service;
 
+import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.domain.AlipayTradeAppPayModel;
 import com.alipay.api.internal.util.AlipaySignature;
+import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.request.AlipayTradeCloseRequest;
 import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
+import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.alipay.api.response.AlipayTradeCloseResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
 import me.superkoh.kframework.core.utils.DateTimeHelper;
@@ -44,7 +48,10 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
         String productDesc = requestPayInfo.getProductDesc();
         AlipayPrepayInfo alipayPrepayInfo;
         AlipayConfig config = extraAlipayConfig(accountInfo);
-        if (requestPayInfo.getChannel().equals(PaymentChannel.WAP)) {
+
+        if (requestPayInfo.getChannel().equals(PaymentChannel.APP)) {
+            alipayPrepayInfo = getAlipayAppPayInfo(tradeNo, amount, timeout, productName, productDesc, accountInfo);
+        } else if (requestPayInfo.getChannel().equals(PaymentChannel.WAP)) {
             alipayPrepayInfo = getAlipayWapPayInfo(tradeNo, amount, timeout, productName, productDesc, accountInfo);
         } else {
             alipayPrepayInfo = getAlipayDirectPayInfo(tradeNo, amount, timeout, productName, productDesc, config);
@@ -149,8 +156,8 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
         logger.info("收到支付宝支付结果通知: " + notifyParams.toString());
         Map<String, String> tempParams = new HashMap<>();
         tempParams.putAll(notifyParams);
-        if (AlipaySignature.rsaCheckV1(tempParams, config.getPublicKey(), "utf-8") ||
-                AlipaySignature.rsaCheckV1(notifyParams, config.getPublicKey(), "utf-8")) {
+        if (AlipaySignature.rsaCheckV1(tempParams, config.getPublicKey(), "utf-8", config.getSignType()) ||
+                AlipaySignature.rsaCheckV1(notifyParams, config.getPublicKey(), "utf-8", config.getSignType())) {
             logger.info("支付宝结果通知签名验证通过");
 
             String sellerId = notifyParams.get("seller_id");
@@ -232,6 +239,32 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
         return null;
     }
 
+    private AlipayPrepayInfo getAlipayAppPayInfo(String tradeNo, String amount, String timeout, String productName, String productDesc, PaymentAccountInfoInterface accountInfo) {
+        AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
+        //SDK已经封装掉了公共参数，这里只需要传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
+        AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
+        model.setBody(productDesc);
+        model.setSubject(productName);
+        model.setOutTradeNo(tradeNo);
+        model.setTimeoutExpress(timeout);
+        model.setTotalAmount(amount);
+        model.setProductCode("QUICK_MSECURITY_PAY");
+        request.setBizModel(model);
+        request.setNotifyUrl(accountInfo.getAliNotifyUrl());
+
+        //实例化客户端
+        AlipayClient alipayClient = getAlipayClient(accountInfo);
+        try {
+            //这里和普通的接口调用不同，使用的是sdkExecute
+            AlipayTradeAppPayResponse response = alipayClient.sdkExecute(request);
+            return new AlipayPrepayInfo(null, response.getBody());
+        } catch (AlipayApiException e) {
+            e.printStackTrace();
+            logger.error("Alipay get app pay info failed!");
+        }
+        return null;
+    }
+
     private AlipayPrepayInfo getAlipayDirectPayInfo(String tradeNo, String amount, String timeout, String productName, String productDesc, AlipayConfig config)
             throws Exception {
         Map<String, String> sParaTemp = new HashMap<>();
@@ -252,7 +285,7 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
         sParaTemp.put("it_b_pay", timeout);
 
         String form = AlipaySubmit.buildRequest(sParaTemp, "get", "立即支付", config);
-        return new AlipayPrepayInfo(form);
+        return new AlipayPrepayInfo(form, null);
     }
 
     private AlipayPrepayInfo getAlipayWapPayInfo(String tradeNo, String amount, String timeout, String productName, String productDesc, PaymentAccountInfoInterface accountInfo)
@@ -271,7 +304,7 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
                 "}");
 
         String form = getAlipayClient(accountInfo).pageExecute(alipayRequest).getBody();
-        return new AlipayPrepayInfo(form);
+        return new AlipayPrepayInfo(form, null);
     }
 
     private AlipayTradeQueryResponse queryAlipayWapPay(String tradeNo, PaymentAccountInfoInterface accountInfo) throws Exception {
@@ -306,12 +339,13 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
         config.setPublicKey(accountInfo.getAliAppPublicKey());
         config.setNotifyUrl(accountInfo.getAliNotifyUrl());
         config.setReturnUrl(accountInfo.getAliReturnUrl());
+        config.setSignType(accountInfo.getAliSignType());
         return config;
     }
 
     private AlipayClient getAlipayClient(PaymentAccountInfoInterface accountInfo) {
         return new DefaultAlipayClient(accountInfo.getAliServerUrl(),
-                accountInfo.getAliAppId(), accountInfo.getAliAppPrivateKey(),
-                "json", "utf-8", accountInfo.getAliAppPublicKey());
+                accountInfo.getAliAppId(), accountInfo.getAliAppPrivateKey(), "json",
+                "utf-8", accountInfo.getAliAppPublicKey(), accountInfo.getAliSignType());
     }
 }

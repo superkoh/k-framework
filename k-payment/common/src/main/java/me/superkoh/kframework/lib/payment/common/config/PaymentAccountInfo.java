@@ -58,6 +58,10 @@ public class PaymentAccountInfo implements PaymentAccountInfoInterface {
      */
     private String aliAppPublicKey;
     /**
+     * 支付宝签名类型RSA 或者 RSA2
+     */
+    private String aliSignType;
+    /**
      * 支付宝支付链接
      */
     private String aliServerUrl;
@@ -327,5 +331,14 @@ public class PaymentAccountInfo implements PaymentAccountInfoInterface {
 
     public void setUnionSingleMode(String unionSingleMode) {
         this.unionSingleMode = unionSingleMode;
+    }
+
+    @Override
+    public String getAliSignType() {
+        return aliSignType;
+    }
+
+    public void setAliSignType(String aliSignType) {
+        this.aliSignType = aliSignType;
     }
 }

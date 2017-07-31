@@ -33,6 +33,8 @@ public interface PaymentAccountInfoInterface {
 
     String getAliAppPublicKey();
 
+    String getAliSignType();
+
     String getAliServerUrl();
 
     String getAliReturnUrl();
