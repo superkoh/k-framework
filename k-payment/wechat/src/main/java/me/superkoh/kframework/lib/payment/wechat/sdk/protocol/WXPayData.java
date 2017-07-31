@@ -1,8 +1,10 @@
 package me.superkoh.kframework.lib.payment.wechat.sdk.protocol;
 
+import me.superkoh.kframework.lib.payment.common.service.info.WxPrepayInfo;
 import me.superkoh.kframework.lib.payment.wechat.sdk.common.*;
 import com.thoughtworks.xstream.XStream;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -206,6 +208,20 @@ public class WXPayData {
 
         String sign = Signature.getSign(prepayData.getAllValues(), appConfig.getKey());
         prepayData.setValue(WXPayConstants.prepaySignKey, sign);
+        return prepayData;
+    }
+
+    public static WXPayData appPrepayData(WXPerAppConfig appConfig, WXPayData payResData) {
+        WXPayData prepayData = new WXPayData();
+        prepayData.setValue(WXPayConstants.appAppIdKey, appConfig.getAppID());
+        prepayData.setValue(WXPayConstants.appPartnerIdKey, appConfig.getMchID());
+        prepayData.setValue(WXPayConstants.appPrepayIdKey, payResData.getValue(WXPayConstants.prepayIdKey));
+        prepayData.setValue(WXPayConstants.appPackageKey, "Sign=WXPay");
+        prepayData.setValue(WXPayConstants.appNonceStrKey, payResData.getValue(WXPayConstants.nonceStrKey));
+        prepayData.setValue(WXPayConstants.appTimestampKey, String.valueOf(Instant.now().getEpochSecond()));
+
+        String sign = Signature.getSign(prepayData.getAllValues(), appConfig.getKey());
+        prepayData.setValue(WXPayConstants.appSignKey, sign);
         return prepayData;
     }
 

@@ -333,17 +333,16 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
         WXPayData orderReqData = WXPayData.unifiedOrderReqData(wechatInfo, productName, "", "", outTradeNo, "CNY",
                 amount, userIp, startTime, expiredTime, "", "APP", productId, "");
         WXPayData orderResData = processUnifiedOrderByReqData(orderReqData, wechatInfo);
-        WXPayData prepayData = WXPayData.prepayData(wechatInfo, (String)orderResData.getValue(WXPayConstants.prepayIdKey));
+        WXPayData prepayData = WXPayData.appPrepayData(wechatInfo, orderResData);
 
         WxPrepayInfo prepayInfo = new WxPrepayInfo();
-        prepayInfo.setNonceStr((String)prepayData.getValue(WXPayConstants.prepayNonceStrKey));
-        prepayInfo.setPackageStr((String)prepayData.getValue(WXPayConstants.prepayPackageKey));
-        prepayInfo.setPaySign((String)prepayData.getValue(WXPayConstants.prepaySignKey));
-        prepayInfo.setSignType((String)prepayData.getValue(WXPayConstants.prepaySignTypeKey));
-        prepayInfo.setTimestamp((String)prepayData.getValue(WXPayConstants.prepayTimestampKey));
-        prepayInfo.setPrepayId((String)prepayData.getValue(WXPayConstants.prepayIdKey));
-        prepayInfo.setAppId(wechatInfo.getAppID());
-        prepayInfo.setPartnerId(wechatInfo.getMchID());
+        prepayInfo.setAppId((String) prepayData.getValue(WXPayConstants.appAppIdKey));
+        prepayInfo.setPartnerId((String) prepayData.getValue(WXPayConstants.appPartnerIdKey));
+        prepayInfo.setPrepayId((String) prepayData.getValue(WXPayConstants.appPrepayIdKey));
+        prepayInfo.setPackageStr((String) prepayData.getValue(WXPayConstants.appPackageKey));
+        prepayInfo.setNonceStr((String) prepayData.getValue(WXPayConstants.appNonceStrKey));
+        prepayInfo.setTimestamp((String) prepayData.getValue(WXPayConstants.appTimestampKey));
+        prepayInfo.setPaySign((String) prepayData.getValue(WXPayConstants.appSignKey));
         return prepayInfo;
     }
 

@@ -105,4 +105,14 @@ public class WXPayConstants {
     public static final String prepayPackageKey = "package";
     public static final String prepaySignTypeKey = "signType";
     public static final String prepaySignKey = "paySign";
+
+    //App端发起微信支付请求需要的参数
+    //https://mp.weixin.qq.com/wiki/7/aaa137b55fb2e0456bf8dd9148dd613f.html#.E5.BE.AE.E4.BF.A1.E6.94.AF.E4.BB.98
+    public static final String appAppIdKey = "appid";
+    public static final String appPartnerIdKey = "partnerid";
+    public static final String appPrepayIdKey = "prepayid";
+    public static final String appPackageKey = "package";
+    public static final String appNonceStrKey = "noncestr";
+    public static final String appTimestampKey = "timestamp";
+    public static final String appSignKey = "sign";
 }
