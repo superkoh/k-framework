@@ -14,7 +14,11 @@ import java.util.Map;
 public interface PaymentService {
     PaymentTransactionInfo getTransactionInfoById(String tradeId, Long userId) throws KException;
 
-    PaymentPrepayInfo getPaymentPrepayInfo(PrepayRequestInfo requestInfo, PaymentAccountInfoInterface accountInfo) throws Exception;
+    PaymentPrepayInfo getPaymentPrepayInfoForWeb(PrepayRequestInfo reqInfo, PaymentAccountInfoInterface accountInfo) throws Exception;
+
+    PaymentPrepayInfo getPaymentPrepayInfoForApp(PrepayRequestInfo reqInfo, PaymentAccountInfoInterface accountInfo) throws Exception;
+
+    void fixedOrderToOfflineTransfer(String orderId, String userId) throws Exception;
 
     PaymentStatusInfo queryPaymentState(PaymentTransactionInfo transactionInfo, PaymentAccountInfoInterface accountInfo) throws Exception;
 

@@ -156,8 +156,15 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
         logger.info("收到支付宝支付结果通知: " + notifyParams.toString());
         Map<String, String> tempParams = new HashMap<>();
         tempParams.putAll(notifyParams);
-        if (AlipaySignature.rsaCheckV1(tempParams, config.getPublicKey(), "utf-8", config.getSignType()) ||
-                AlipaySignature.rsaCheckV1(notifyParams, config.getPublicKey(), "utf-8", config.getSignType())) {
+
+        Boolean rsaCheckValid;
+        if ("RSA2".equals(config.getSignType())) {
+            rsaCheckValid = AlipaySignature.rsaCheckV1(notifyParams, config.getPublicKey(), "utf-8", config.getSignType());
+        } else {
+            rsaCheckValid = AlipaySignature.rsaCheckV1(notifyParams, config.getPublicKey(), "utf-8", config.getSignType());
+        }
+
+        if (rsaCheckValid) {
             logger.info("支付宝结果通知签名验证通过");
 
             String sellerId = notifyParams.get("seller_id");

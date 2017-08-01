@@ -56,12 +56,28 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public PaymentPrepayInfo getPaymentPrepayInfo(PrepayRequestInfo reqInfo, PaymentAccountInfoInterface accountInfo) throws Exception {
+    public PaymentPrepayInfo getPaymentPrepayInfoForWeb(PrepayRequestInfo reqInfo, PaymentAccountInfoInterface accountInfo) throws Exception {
         if (reqInfo.getPayMethod().equals(PaymentMethod.OFFLINE_TRANSFER)) {
-            return startOfflineTransfer(reqInfo, accountInfo);
+            getOrderCoordinator().getPaymentOrderInfoById(reqInfo.getOrderId(), reqInfo.getUserId());
+            return new PaymentPrepayInfo();
         } else {
             return startOnlinePayment(reqInfo, accountInfo);
         }
+    }
+
+    @Override
+    public PaymentPrepayInfo getPaymentPrepayInfoForApp(PrepayRequestInfo reqInfo, PaymentAccountInfoInterface accountInfo) throws Exception {
+        if (reqInfo.getPayMethod().equals(PaymentMethod.OFFLINE_TRANSFER)) {
+            return startOfflineTransfer(reqInfo.getOrderId(), reqInfo.getUserId());
+        } else {
+            return startOnlinePayment(reqInfo, accountInfo);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = {Exception.class})
+    public void fixedOrderToOfflineTransfer(String orderId, String userId) throws Exception {
+        startOfflineTransfer(orderId, userId);
     }
 
     @Override
@@ -194,12 +210,11 @@ public class PaymentServiceImpl implements PaymentService {
         return notifyStatus;
     }
 
-    private PaymentPrepayInfo startOfflineTransfer(PrepayRequestInfo reqInfo, PaymentAccountInfoInterface accountInfo) throws Exception {
-        PaymentOrderInfo orderInfo = getOrderCoordinator().getPaymentOrderInfoById(reqInfo.getOrderId(), reqInfo.getUserId
-                ());
+    private PaymentPrepayInfo startOfflineTransfer(String orderId, String userId) throws Exception {
+        PaymentOrderInfo orderInfo = getOrderCoordinator().getPaymentOrderInfoById(orderId, userId);
         if (!orderInfo.getOfflineTransfer()) {
-            getOrderCoordinator().fixOrderToOfflineTransfer(reqInfo.getOrderId());
-            updateTransactionsToNeedCloseByOrder(reqInfo.getOrderId(), 0);
+            getOrderCoordinator().fixOrderToOfflineTransfer(orderId);
+            updateTransactionsToNeedCloseByOrder(orderId, 0);
         }
         return new PaymentPrepayInfo();
     }
