@@ -112,6 +112,23 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    public PaymentStatusInfo queryRefundState(PaymentTransactionInfo transactionInfo, PaymentAccountInfoInterface accountInfo) throws Exception {
+        ThirdPartyPayService payService = getPayServiceByMethod(transactionInfo.getPaymentMethod());
+        PaymentStatusInfo statusInfo = payService.queryRefundState(transactionInfo.getId().toString(), accountInfo);
+        updateTransactionOrderRefundStatus(statusInfo);
+        return statusInfo;
+    }
+
+    @Override
+    public PaymentStatusInfo applyRefundTransaction(PaymentTransactionInfo transactionInfo, PaymentAccountInfoInterface accountInfo) throws Exception {
+        ThirdPartyPayService payService = getPayServiceByMethod(transactionInfo.getPaymentMethod());
+        PaymentStatusInfo statusInfo = payService.applyRefund(transactionInfo.getId().toString(),
+                transactionInfo.getAmount(), accountInfo);
+        updateTransactionOrderRefundStatus(statusInfo);
+        return statusInfo;
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<PaymentTransactionInfo> findTransactionsNeedQueryState() {
         Long minTime = Instant.now().getEpochSecond();
@@ -145,6 +162,28 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<PaymentTransactionInfo> findTransactionsNeedApplyRefund() {
+        List<String> orderList = getOrderCoordinator().getUserAppliedRefundOrderIdList();
+        if (!orderList.isEmpty()) {
+            return transactionMapper.selectCanApplyRefundTransactions(PaymentStatus.SUCCESS.name(), orderList)
+                    .stream()
+                    .map(PaymentTransactionInfo::new)
+                    .collect(Collectors.toList());
+        }
+        return null;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PaymentTransactionInfo> findTransactionsNeedQueryRefundState() {
+        return transactionMapper.selectNeedQueryRefundStateTransactions(PaymentStatus.APPLIED_REFUND.name())
+                .stream()
+                .map(PaymentTransactionInfo::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void cancelExpiredOrder(String orderId) throws Exception {
         getOrderCoordinator().cancelOrder(orderId);
     }
@@ -164,8 +203,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentNotifyProcessInfo handleUnionpayFrontNotify(String encoding, Map<String, String> notifyParams, PaymentAccountInfoInterface accountInfo) throws Exception {
         ThirdPartyPayService unionService = getPayServiceByMethod(PaymentMethod.UNION_PC);
-        PaymentNotifyProcessInfo notifyStatus = unionService.handleFrontNotify(encoding, notifyParams, accountInfo);
-        return notifyStatus;
+        return unionService.handleFrontNotify(encoding, notifyParams, accountInfo);
     }
 
     @Override
@@ -187,8 +225,7 @@ public class PaymentServiceImpl implements PaymentService {
         ThirdPartyPayService wxService = getPayServiceByMethod(PaymentMethod.WEIXIN_JSAPI);
         Map<String, String> notifyParams = new HashMap<>();
         notifyParams.put("notifyStr", notifyString);
-        PaymentNotifyProcessInfo notifyStatus = wxService.handleFrontNotify(null, notifyParams, accountInfo);
-        return notifyStatus;
+        return wxService.handleFrontNotify(null, notifyParams, accountInfo);
     }
 
     @Override
@@ -206,8 +243,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentNotifyProcessInfo handleAlipayFrontNotify(Map<String, String> notifyParams, PaymentAccountInfoInterface accountInfo) throws Exception {
         ThirdPartyPayService alipayService = getPayServiceByMethod(PaymentMethod.ALIPAY_WAP);
-        PaymentNotifyProcessInfo notifyStatus = alipayService.handleFrontNotify(null, notifyParams, accountInfo);
-        return notifyStatus;
+        return alipayService.handleFrontNotify(null, notifyParams, accountInfo);
     }
 
     private PaymentPrepayInfo startOfflineTransfer(String orderId, String userId) throws Exception {
@@ -341,6 +377,46 @@ public class PaymentServiceImpl implements PaymentService {
                             case PAY_ERROR:
                                 break;
                         }
+                        transactionMapper.updateByPrimaryKeySelective(transactionPO);
+                    } else {
+                        logPaymentException(transactionPO.getOrderId(), tradeId, localStatus.name(), remoteStatus.name(), "交易状态错误");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            txManager.rollback(status);
+            throw e;
+        }
+        txManager.commit(status);
+    }
+
+    private void updateTransactionOrderRefundStatus(PaymentStatusInfo statusInfo) throws Exception {
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        def.setIsolationLevel(TransactionDefinition.ISOLATION_DEFAULT);
+        TransactionStatus status = txManager.getTransaction(def);
+        try {
+            if (statusInfo.getServiceStatus().equals(PaymentServiceStatus.SUCCESS)) {
+                Integer tradeId = Integer.valueOf(statusInfo.getTradeId());
+                PaymentTransaction transactionPO = transactionMapper.selectByPrimaryKey(tradeId);
+                if (null == transactionPO) {
+                    throw new KException("找不到对应交易号");
+                }
+
+                PaymentStatus localStatus = PaymentStatus.valueOf(transactionPO.getStatus());
+                PaymentStatus remoteStatus = statusInfo.getStatus();
+
+                if (!localStatus.equals(remoteStatus)) {
+                    boolean validState = (localStatus.equals(PaymentStatus.SUCCESS) &&
+                            remoteStatus.equals(PaymentStatus.APPLIED_REFUND));
+                    validState |=  (localStatus.equals(PaymentStatus.APPLIED_REFUND) &&
+                            (remoteStatus.equals(PaymentStatus.REFUNDED) ||
+                                    remoteStatus.equals(PaymentStatus.REFUND_FAILED)));
+
+                    if (validState) {
+                        transactionPO.setStatus(remoteStatus.name());
+                        transactionPO.setRefundTime(statusInfo.getPaymentTime());
+                        getOrderCoordinator().updateRefundStatus(transactionPO.getOrderId(), transactionPO);
                         transactionMapper.updateByPrimaryKeySelective(transactionPO);
                     } else {
                         logPaymentException(transactionPO.getOrderId(), tradeId, localStatus.name(), remoteStatus.name(), "交易状态错误");

@@ -39,4 +39,11 @@ public interface PaymentTransactionMapper {
 
     @SelectProvider(type = PaymentTransactionSqlBuilder.class, method = "selectNeedQueryTrades")
     List<PaymentTransaction> selectNeedQueryTransactions(@Param("maxTime") Long maxTime, @Param("minTime") Long minTime, @Param("status") String status);
+
+    @SelectProvider(type = PaymentTransactionSqlBuilder.class, method = "selectNeedQueryRefundStateTransactions")
+    List<PaymentTransaction> selectNeedQueryRefundStateTransactions(@Param("status") String status);
+
+    @SelectProvider(type = PaymentTransactionSqlBuilder.class, method = "selectCanApplyRefundTransactions")
+    List<PaymentTransaction> selectCanApplyRefundTransactions(@Param("status") String status,
+                                                              @Param("orderIdList") List<String> orderIdList);
 }

@@ -1,7 +1,10 @@
 package me.superkoh.kframework.lib.payment.common.model.domain;
 
 import me.superkoh.kframework.lib.db.common.domain.TimeAndAuthorTraceableDomain;
+import me.superkoh.kframework.lib.db.mybatis.annotation.Column;
 import me.superkoh.kframework.lib.db.mybatis.annotation.PK;
+import me.superkoh.kframework.lib.payment.common.type.PaymentStatus;
+import org.apache.ibatis.type.JdbcType;
 
 /**
  * 交易结构
@@ -20,6 +23,7 @@ public class PaymentTransaction extends TimeAndAuthorTraceableDomain {
     private Long effectTime;
     private Long transactionTime;
     private Long expireTime;
+    private Long refundTime;
     private String timezone;
     private String status;
     private Boolean needClose;
@@ -110,6 +114,14 @@ public class PaymentTransaction extends TimeAndAuthorTraceableDomain {
 
     public void setExpireTime(Long expireTime) {
         this.expireTime = expireTime;
+    }
+
+    public Long getRefundTime() {
+        return refundTime;
+    }
+
+    public void setRefundTime(Long refundTime) {
+        this.refundTime = refundTime;
     }
 
     public String getTimezone() {

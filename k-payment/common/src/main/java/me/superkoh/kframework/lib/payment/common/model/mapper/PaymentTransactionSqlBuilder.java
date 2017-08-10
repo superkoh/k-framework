@@ -76,4 +76,21 @@ public class PaymentTransactionSqlBuilder extends AbstractCommonSqlBuilder {
                 .WHERE("status = #{status}")
                 .ORDER_BY("transaction_time ASC LIMIT 200").toString();
     }
+
+    public String selectNeedQueryRefundStateTransactions(@Param("status") String status) {
+        return new SQL()
+                .SELECT("*")
+                .FROM(getTableName())
+                .WHERE("status = #{status}")
+                .ORDER_BY("id ASC LIMIT 200").toString();
+    }
+
+    public String selectCanApplyRefundTransactions(@Param("status") String status, @Param("orderIdList") List<Integer> orderIdList) {
+        return new SQL()
+                .SELECT("*")
+                .FROM(getTableName())
+                .WHERE("status = #{status}")
+                .WHERE("order_id IN <foreach close=\")\" collection=\"orderIdList\" item=\"listItem\" open=\"(\" separator=\",\">\n #{listItem,jdbcType=INTEGER}\n </foreach>")
+                .ORDER_BY("id ASC LIMIT 200").toString();
+    }
 }

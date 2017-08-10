@@ -24,11 +24,19 @@ public interface PaymentService {
 
     PaymentStatusInfo closePaymentTransaction(PaymentTransactionInfo transactionInfo, PaymentAccountInfoInterface accountInfo) throws Exception;
 
+    PaymentStatusInfo queryRefundState(PaymentTransactionInfo transactionInfo, PaymentAccountInfoInterface accountInfo) throws Exception;
+
+    PaymentStatusInfo applyRefundTransaction(PaymentTransactionInfo transactionInfo, PaymentAccountInfoInterface accountInfo) throws Exception;
+
     List<PaymentTransactionInfo> findTransactionsNeedQueryState();
 
     Map<String, List<PaymentTransactionInfo>> findExpiredTransactions();
 
     List<PaymentTransactionInfo> findTransactionsNeedClose();
+
+    List<PaymentTransactionInfo> findTransactionsNeedApplyRefund();
+
+    List<PaymentTransactionInfo> findTransactionsNeedQueryRefundState();
 
     void cancelExpiredOrder(String orderId) throws Exception;
 

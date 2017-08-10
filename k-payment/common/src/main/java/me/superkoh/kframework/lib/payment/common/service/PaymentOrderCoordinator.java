@@ -19,4 +19,8 @@ public interface PaymentOrderCoordinator {
     void paymentSuccess(String orderId, PaymentTransaction transactionPO) throws Exception;
 
     void fixOrderToOfflineTransfer(String orderId) throws Exception;
+
+    List<String> getUserAppliedRefundOrderIdList();
+
+    void updateRefundStatus(String orderId, PaymentTransaction transactionPO) throws Exception;
 }
