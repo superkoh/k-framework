@@ -58,8 +58,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional(rollbackFor = {Exception.class})
     public PaymentPrepayInfo getPaymentPrepayInfoForWeb(PrepayRequestInfo reqInfo, PaymentAccountInfoInterface accountInfo) throws Exception {
         if (reqInfo.getPayMethod().equals(PaymentMethod.OFFLINE_TRANSFER)) {
-            getOrderCoordinator().getPaymentOrderInfoById(reqInfo.getOrderId(), reqInfo.getUserId());
-            return new PaymentPrepayInfo();
+            return startOfflineTransfer(reqInfo.getOrderId(), reqInfo.getUserId());
         } else {
             return startOnlinePayment(reqInfo, accountInfo);
         }
@@ -68,7 +67,8 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentPrepayInfo getPaymentPrepayInfoForApp(PrepayRequestInfo reqInfo, PaymentAccountInfoInterface accountInfo) throws Exception {
         if (reqInfo.getPayMethod().equals(PaymentMethod.OFFLINE_TRANSFER)) {
-            return startOfflineTransfer(reqInfo.getOrderId(), reqInfo.getUserId());
+            getOrderCoordinator().getPaymentOrderInfoById(reqInfo.getOrderId(), reqInfo.getUserId());
+            return new PaymentPrepayInfo();
         } else {
             return startOnlinePayment(reqInfo, accountInfo);
         }
