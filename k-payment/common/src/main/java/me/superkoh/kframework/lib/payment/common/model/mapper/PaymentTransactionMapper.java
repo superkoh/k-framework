@@ -35,7 +35,7 @@ public interface PaymentTransactionMapper {
     List<PaymentTransaction> selectNeedClosedTransactions();
 
     @SelectProvider(type = PaymentTransactionSqlBuilder.class, method = "selectExpiredTrades")
-    List<PaymentTransaction> selectExpiredTransactions(List<String> orderIdList);
+    List<PaymentTransaction> selectExpiredTransactions(@Param("orderIdList") List<String> orderIdList);
 
     @SelectProvider(type = PaymentTransactionSqlBuilder.class, method = "selectNeedQueryTrades")
     List<PaymentTransaction> selectNeedQueryTransactions(@Param("maxTime") Long maxTime, @Param("minTime") Long minTime, @Param("status") String status);

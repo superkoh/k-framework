@@ -29,6 +29,9 @@ public class PaymentTransactionInfo {
 
     public PaymentTransactionInfo(PaymentTransaction transactionPO) {
         BeanUtils.copyProperties(transactionPO, this);
+        this.paymentMethod = PaymentMethod.valueOf(transactionPO.getPaymentMethod());
+        this.status = PaymentStatus.valueOf(transactionPO.getStatus());
+        this.timezone = ZoneId.of(transactionPO.getTimezone());
     }
 
     public void setId(Integer id) {

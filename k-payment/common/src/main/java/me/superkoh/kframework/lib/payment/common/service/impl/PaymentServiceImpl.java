@@ -85,7 +85,9 @@ public class PaymentServiceImpl implements PaymentService {
         ThirdPartyPayService payService = getPayServiceByMethod(transactionInfo.getPaymentMethod());
         PaymentStatusInfo statusInfo = payService.queryPayResult(transactionInfo.getId().toString(),
                 transactionInfo.getTransactionTime(), accountInfo);
-        if (statusInfo.getStatus().equals(PaymentStatus.NOT_PAY) && statusInfo.getUnionOrderNotExist()) {
+        if (statusInfo.getServiceStatus() == PaymentServiceStatus.SUCCESS &&
+                statusInfo.getStatus().equals(PaymentStatus.NOT_PAY) &&
+                statusInfo.getUnionOrderNotExist()) {
             Long currentTime = Instant.now().getEpochSecond();
             if (currentTime > transactionInfo.getExpireTime() &&
                     currentTime > transactionInfo.getTransactionTime() + 10 * 60) {
@@ -100,7 +102,9 @@ public class PaymentServiceImpl implements PaymentService {
     public PaymentStatusInfo closePaymentTransaction(PaymentTransactionInfo transactionInfo, PaymentAccountInfoInterface accountInfo) throws Exception {
         ThirdPartyPayService payService = getPayServiceByMethod(transactionInfo.getPaymentMethod());
         PaymentStatusInfo statusInfo =  payService.closeUnfinishedPay(transactionInfo.getId().toString(), accountInfo);
-        if (statusInfo.getStatus().equals(PaymentStatus.NOT_PAY) && statusInfo.getUnionOrderNotExist()) {
+        if (statusInfo.getServiceStatus() == PaymentServiceStatus.SUCCESS &&
+                statusInfo.getStatus().equals(PaymentStatus.NOT_PAY) &&
+                statusInfo.getUnionOrderNotExist()) {
             Long currentTime = Instant.now().getEpochSecond();
             if (currentTime > transactionInfo.getExpireTime() &&
                     currentTime > transactionInfo.getTransactionTime() + 10 * 60) {

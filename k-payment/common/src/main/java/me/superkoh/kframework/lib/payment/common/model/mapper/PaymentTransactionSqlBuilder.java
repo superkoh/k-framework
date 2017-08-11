@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 交易sql builder
@@ -60,11 +61,13 @@ public class PaymentTransactionSqlBuilder extends AbstractCommonSqlBuilder {
                 .WHERE("status!='SUCCESS'").toString();
     }
 
-    public String selectExpiredTrades(List<String> orderIdList) {
+    public String selectExpiredTrades(@Param("orderIdList") List<String> orderIdList) {
+        String orderIdStr = orderIdList.stream().collect(Collectors.joining(","));
+        orderIdStr = "(" + orderIdStr + ")";
         return new SQL()
                 .SELECT("*")
                 .FROM(getTableName())
-                .WHERE("order_id IN #{orderIdList}").toString();
+                .WHERE("order_id IN " + orderIdStr).toString();
     }
 
     public String selectNeedQueryTrades(@Param("maxTime") Long maxTime, @Param("minTime") Long minTime, @Param("status") String status) {
@@ -86,11 +89,14 @@ public class PaymentTransactionSqlBuilder extends AbstractCommonSqlBuilder {
     }
 
     public String selectCanApplyRefundTransactions(@Param("status") String status, @Param("orderIdList") List<Integer> orderIdList) {
+        String orderIdStr = orderIdList.stream().map(Object::toString).collect(Collectors.joining(","));
+        orderIdStr = "(" + orderIdStr + ")";
+
         return new SQL()
                 .SELECT("*")
                 .FROM(getTableName())
                 .WHERE("status = #{status}")
-                .WHERE("order_id IN <foreach close=\")\" collection=\"orderIdList\" item=\"listItem\" open=\"(\" separator=\",\">\n #{listItem,jdbcType=INTEGER}\n </foreach>")
+                .WHERE("order_id IN " + orderIdStr)
                 .ORDER_BY("id ASC LIMIT 200").toString();
     }
 }
