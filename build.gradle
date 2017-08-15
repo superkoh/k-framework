@@ -2,7 +2,7 @@ allprojects {
     apply plugin: 'java'
     apply plugin: 'maven-publish'
 
-    version '1.1.10'
+    version '1.1.11'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -24,7 +24,7 @@ subprojects {
     publishing {
         repositories {
             maven {
-                url "file:///Users/zhangyh/workspace/goodtalk-comp/maven"
+                url "file:///Users/KOH/Projects/superkoh/maven"
             }
         }
     }

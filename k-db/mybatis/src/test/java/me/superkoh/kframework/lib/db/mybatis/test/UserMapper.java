@@ -2,6 +2,8 @@ package me.superkoh.kframework.lib.db.mybatis.test;
 
 import me.superkoh.kframework.core.type.Page;
 import me.superkoh.kframework.lib.db.mybatis.annotation.KMapper;
+import me.superkoh.kframework.lib.db.mybatis.builder.Example;
+import me.superkoh.kframework.lib.db.mybatis.builder.SqlBuilderConstant;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -23,6 +25,12 @@ public interface UserMapper {
 
     @UpdateProvider(type = UserSqlBuilder.class, method = "updateByPrimaryKeySelective")
     int updateByPrimaryKeySelective(User record);
+
+    @Select("<script>\n" +
+            "select * from user\n" +
+            SqlBuilderConstant.WHERE_SEGMENT +
+            "</script>")
+    List<User> selectByExample(@Param("example") Example example);
 
     @SelectProvider(type = UserSqlBuilder.class, method = "selectByQuery")
     List<User> selectByQuery(Class clazz, @Param("query") UserQuery query, String orderBy);

@@ -4,6 +4,7 @@ import me.superkoh.kframework.core.type.Page;
 import me.superkoh.kframework.lib.db.mybatis.test.User;
 import me.superkoh.kframework.lib.db.mybatis.test.UserMapper;
 import me.superkoh.kframework.lib.db.mybatis.test.UserQuery;
+import me.superkoh.kframework.lib.db.mybatis.test.UserSex;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -49,6 +51,35 @@ public class AbstractCommonSqlBuilderTest {
         int updated = userMapper.updateByPrimaryKeySelective(toUpdate);
         Assert.assertEquals(1, updated);
         Assert.assertEquals("superkoh", userMapper.selectById(user.getId()).getName());
+    }
+
+    @Test
+    public void selectByExample() throws Exception {
+        User user1 = new User();
+        user1.setName("KOH1");
+        user1.setGender(UserSex.FEMALE);
+        userMapper.insert(user1);
+        User user2 = new User();
+        user2.setName("KOH2");
+        user2.setGender(UserSex.MALE);
+        userMapper.insert(user2);
+
+        Example example = new Example();
+        example.createCriteria().andEqualTo("gender", user1.getGender());
+        List<User> userList = userMapper.selectByExample(example);
+        Assert.assertEquals(1, userList.size());
+
+//        query = new UserQuery();
+//        query.setMaxId(user2.getId() + 1);
+//        userList = userMapper.selectByQuery(User.class, query, "id desc");
+//        Assert.assertEquals(2, userList.size());
+//        Assert.assertEquals(user2.getId(), userList.get(0).getId());
+//
+//        query = new UserQuery();
+//        query.setMinId(user1.getId());
+//        query.setName("%H2%");
+//        userList = userMapper.selectByQuery(User.class, query, null);
+//        Assert.assertEquals(1, userList.size());
     }
 
     @Test

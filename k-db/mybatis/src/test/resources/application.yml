@@ -1,3 +1,4 @@
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
+  type-handlers-package: me.superkoh.kframework.lib.db.mybatis.test

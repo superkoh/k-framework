@@ -12,6 +12,7 @@ public class User extends TimeAndAuthorTraceableDomain {
     @PK
     private Long id;
     private String name;
+    private UserSex gender;
 
     public Long getId() {
         return id;
@@ -27,5 +28,13 @@ public class User extends TimeAndAuthorTraceableDomain {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public UserSex getGender() {
+        return gender;
+    }
+
+    public void setGender(UserSex gender) {
+        this.gender = gender;
     }
 }

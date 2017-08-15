@@ -23,7 +23,6 @@ import me.superkoh.kframework.lib.payment.common.type.PaymentServiceStatus;
 import me.superkoh.kframework.lib.payment.common.type.PaymentStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
