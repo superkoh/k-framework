@@ -1,10 +1,8 @@
 package me.superkoh.kframework.lib.db.mybatis.builder;
 
+import com.google.common.collect.Lists;
 import me.superkoh.kframework.core.type.Page;
-import me.superkoh.kframework.lib.db.mybatis.test.User;
-import me.superkoh.kframework.lib.db.mybatis.test.UserMapper;
-import me.superkoh.kframework.lib.db.mybatis.test.UserQuery;
-import me.superkoh.kframework.lib.db.mybatis.test.UserSex;
+import me.superkoh.kframework.lib.db.mybatis.test.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +27,8 @@ import java.util.List;
 public class AbstractCommonSqlBuilderTest {
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private UserMapper2 userMapper2;
 
     @Test
     public void insert() throws Exception {
@@ -42,13 +42,13 @@ public class AbstractCommonSqlBuilderTest {
 
     @Test
     public void updateByPrimaryKeySelective() throws Exception {
-        User user = new User();
+        User2 user = new User2();
         user.setName("KOH");
-        userMapper.insert(user);
-        User toUpdate = new User();
+        userMapper2.insert(user);
+        User2 toUpdate = new User2();
         toUpdate.setId(user.getId());
         toUpdate.setName("superkoh");
-        int updated = userMapper.updateByPrimaryKeySelective(toUpdate);
+        int updated = userMapper2.updateByPrimaryKeySelective(toUpdate);
         Assert.assertEquals(1, updated);
         Assert.assertEquals("superkoh", userMapper.selectById(user.getId()).getName());
     }
@@ -65,9 +65,9 @@ public class AbstractCommonSqlBuilderTest {
         userMapper.insert(user2);
 
         Example example = new Example();
-        example.createCriteria().andEqualTo("gender", user1.getGender());
+        example.createCriteria().andIn("id", Lists.newArrayList(user1.getId(), user2.getId()));
         List<User> userList = userMapper.selectByExample(example);
-        Assert.assertEquals(1, userList.size());
+        Assert.assertEquals(2, userList.size());
 
 //        query = new UserQuery();
 //        query.setMaxId(user2.getId() + 1);

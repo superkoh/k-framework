@@ -9,24 +9,30 @@ import org.apache.ibatis.jdbc.SQL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Map;
 
 import static me.superkoh.kframework.lib.db.mybatis.builder.SqlBuilderUtils.*;
 
 /**
- * Created by KOH on 2017/5/13.
- * <p>
- * webFramework
+ * Created by KOH on 2017/8/16.
  */
-abstract public class AbstractCommonSqlBuilder {
+public abstract class BaseSqlBuilder<T> {
+    private static Logger logger = LoggerFactory.getLogger(BaseSqlBuilder.class);
+    private Class<T> entityClass;
 
-    private static Logger logger = LoggerFactory.getLogger(AbstractCommonSqlBuilder.class);
+    public BaseSqlBuilder() {
+        Type genType = getClass().getGenericSuperclass();
+        Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
+        entityClass = (Class) params[0];
+    }
 
     protected abstract String getTableName();
 
-    public String insert(Object record) {
+    public String insert(T record) {
         SQL sql = new SQL().INSERT_INTO(this.getTableName());
-        getAllDeclaredFields(record.getClass()).stream()
+        getAllDeclaredFields(entityClass).stream()
                 .filter(field -> !field.isAnnotationPresent(Ignore.class))
                 .forEach(field -> {
                     String fieldName = field.getName();
@@ -46,11 +52,11 @@ abstract public class AbstractCommonSqlBuilder {
         return sql.toString();
     }
 
-    public String updateByPrimaryKeySelective(Object record) {
+    public String updateByPrimaryKeySelective(T record) {
         final String[] primaryKeyName = {null};
         final Column[] primaryKeyAnnotation = {null};
         SQL sql = new SQL().UPDATE(this.getTableName());
-        getAllDeclaredFields(record.getClass()).stream()
+        getAllDeclaredFields(entityClass).stream()
                 .filter(field -> !field.isAnnotationPresent(Ignore.class))
                 .forEach(field -> {
                     String fieldName = field.getName();
@@ -83,8 +89,8 @@ abstract public class AbstractCommonSqlBuilder {
         return sql.toString();
     }
 
-    public String selectByQuery(Class clazz, @Param("query") Object query, String orderBy) {
-        SQL sql = selectByQueryInternal(this.getTableName(), clazz);
+    public String selectByQuery(@Param("query") Object query, String orderBy) {
+        SQL sql = selectByQueryInternal(this.getTableName(), entityClass);
         queryWHERE(sql, query, orderBy);
         if (logger.isDebugEnabled()) {
             logger.debug(sql.toString());
@@ -92,12 +98,12 @@ abstract public class AbstractCommonSqlBuilder {
         return sql.toString();
     }
 
-    public String selectPageByQuery(Class clazz, @Param("query") Object query, Page page) {
+    public String selectPageByQuery(@Param("query") Object query, Page page) {
         String orderBy = null;
         if (null != page) {
             orderBy = page.getOrderBy();
         }
-        SQL sql = selectByQueryInternal(this.getTableName(), clazz);
+        SQL sql = selectByQueryInternal(this.getTableName(), entityClass);
         queryWHERE(sql, query, orderBy);
         String sqlStr = sql.toString();
         if (null != page) {
@@ -119,5 +125,4 @@ abstract public class AbstractCommonSqlBuilder {
         }
         return sql.toString();
     }
-
 }

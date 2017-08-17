@@ -8,7 +8,7 @@ import me.superkoh.kframework.lib.db.mybatis.annotation.PK;
  * <p>
  * k-framework
  */
-public class User extends TimeAndAuthorTraceableDomain {
+public class User2 extends TimeAndAuthorTraceableDomain {
     @PK
     private Long id;
     private String name;

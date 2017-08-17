@@ -15,30 +15,30 @@ import static me.superkoh.kframework.lib.db.mybatis.builder.SqlBuilderConstant.*
  * k-framework
  */
 @KMapper
-public interface UserMapper {
+public interface UserMapper2 {
 
     @Select("select * from user where id=#{id}")
-    User selectById(long id);
+    User2 selectById(long id);
 
-    @InsertProvider(type = UserSqlBuilder.class, method = INSERT)
+    @InsertProvider(type = UserSqlBuilder2.class, method = INSERT)
     @SelectKey(statement = "select last_insert_id()", keyProperty = "id", before = false, resultType = Long.class)
-    int insert(User record);
+    int insert(User2 record);
 
-    @UpdateProvider(type = UserSqlBuilder.class, method = UPDATE_BY_PRIMARY_KEY_SELECTIVE)
-    int updateByPrimaryKeySelective(User record);
+    @UpdateProvider(type = UserSqlBuilder2.class, method = UPDATE_BY_PRIMARY_KEY_SELECTIVE)
+    int updateByPrimaryKeySelective(User2 record);
 
     @Select("<script>\n" +
             "select * from user\n" +
             WHERE_SEGMENT +
             "</script>")
-    List<User> selectByExample(@Param("example") Example example);
+    List<User2> selectByExample(@Param("example") Example example);
 
-    @SelectProvider(type = UserSqlBuilder.class, method = SELECT_BY_QUERY)
-    List<User> selectByQuery(Class clazz, @Param("query") UserQuery query, String orderBy);
+    @SelectProvider(type = UserSqlBuilder2.class, method = SELECT_BY_QUERY)
+    List<User2> selectByQuery(@Param("query") UserQuery query, String orderBy);
 
-    @SelectProvider(type = UserSqlBuilder.class, method = SELECT_PAGE_BY_QUERY)
-    List<User> selectPageByQuery(Class clazz, @Param("query") UserQuery query, Page page);
+    @SelectProvider(type = UserSqlBuilder2.class, method = SELECT_PAGE_BY_QUERY)
+    List<User2> selectPageByQuery(@Param("query") UserQuery query, Page page);
 
-    @SelectProvider(type = UserSqlBuilder.class, method = COUNT_BY_QUERY)
+    @SelectProvider(type = UserSqlBuilder2.class, method = COUNT_BY_QUERY)
     long countByQuery(@Param("query") UserQuery query);
 }
