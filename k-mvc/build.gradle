@@ -22,6 +22,7 @@ dependencies {
     compile 'io.springfox:springfox-swagger-ui:2.6.1'
     compile('commons-io:commons-io:2.5')
     compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.8"
+    compile group: 'org.cache2k', name: 'cache2k-all', version: '1.0.1.Final'
     compile project(':k-core')
     compile project(':k-db/mybatis')
 }

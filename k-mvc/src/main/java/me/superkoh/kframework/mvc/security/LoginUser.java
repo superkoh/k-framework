@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public interface LoginUser {
     Long getId();
 
+    @Deprecated
     String getUsername();
 
     String getToken();
