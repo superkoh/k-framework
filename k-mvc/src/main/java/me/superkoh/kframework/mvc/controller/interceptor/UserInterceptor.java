@@ -1,12 +1,12 @@
 package me.superkoh.kframework.mvc.controller.interceptor;
 
+import me.superkoh.kframework.core.utils.ACU;
 import me.superkoh.kframework.mvc.controller.bean.RequestAttributes;
 import me.superkoh.kframework.mvc.controller.config.RequestHeaderProperties;
 import me.superkoh.kframework.mvc.security.LoginUser;
 import me.superkoh.kframework.mvc.security.LoginUserService;
 import org.cache2k.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -19,9 +19,6 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
     private RequestAttributes requestAttributes;
     @Autowired
     private RequestHeaderProperties requestHeaderProperties;
-    @Autowired(required = false)
-    @Qualifier("localUserCache")
-    private Cache<String, LoginUser> localUserCache;
 
     private LoginUserService loginUserService;
 
@@ -37,8 +34,9 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
         }
         String token = request.getHeader(requestHeaderProperties.getUserToken());
         if (null != token) {
-            String localUserCacheKey = loginUserService.getClass().getCanonicalName() + ":" + token;
             LoginUser loginUser = null;
+            Cache<String, LoginUser> localUserCache = (Cache<String, LoginUser>) ACU.bean("localUserCache");
+            String localUserCacheKey = loginUserService.getClass().getCanonicalName() + ":" + token;
             if (null != localUserCache && localUserCache.containsKey(localUserCacheKey)) {
                 loginUser = localUserCache.get(localUserCacheKey);
                 if (loginUser.getTokenExpireTime().isAfter(LocalDateTime.now())) {
@@ -52,7 +50,9 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
                     if (loginUser.getTokenExpireTime().isAfter(LocalDateTime.now())) {
                         loginUser = null;
                     } else {
-                        localUserCache.put(localUserCacheKey, loginUser);
+                        if (null != localUserCache) {
+                            localUserCache.put(localUserCacheKey, loginUser);
+                        }
                     }
                 }
             }

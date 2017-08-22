@@ -26,7 +26,19 @@ public class ACU implements ApplicationContextAware {
     }
 
     public static Object bean(String name) {
-        return ctx().getBean(name);
+        try {
+            return ctx().getBean(name);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static <T> T bean(String name, Class<T> clazz) {
+        try {
+            return ctx().getBean(name, clazz);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public static <T> T getProperty(String key, Class<T> targetType, T defaultValue) {
