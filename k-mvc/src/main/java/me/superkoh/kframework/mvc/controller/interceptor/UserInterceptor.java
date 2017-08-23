@@ -39,7 +39,7 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
             String localUserCacheKey = loginUserService.getClass().getCanonicalName() + ":" + token;
             if (null != localUserCache && localUserCache.containsKey(localUserCacheKey)) {
                 loginUser = localUserCache.get(localUserCacheKey);
-                if (loginUser.getTokenExpireTime().isAfter(LocalDateTime.now())) {
+                if (loginUser.getTokenExpireTime().isBefore(LocalDateTime.now())) {
                     localUserCache.remove(localUserCacheKey);
                     loginUser = null;
                 }
@@ -47,7 +47,7 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
             if (null == loginUser) {
                 loginUser = loginUserService.getUserByToken(token);
                 if (null != loginUser) {
-                    if (loginUser.getTokenExpireTime().isAfter(LocalDateTime.now())) {
+                    if (loginUser.getTokenExpireTime().isBefore(LocalDateTime.now())) {
                         loginUser = null;
                     } else {
                         if (null != localUserCache) {
