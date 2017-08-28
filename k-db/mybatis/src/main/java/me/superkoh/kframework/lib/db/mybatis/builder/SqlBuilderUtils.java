@@ -32,14 +32,6 @@ public class SqlBuilderUtils {
         return mapUnderscoreToCamelCase;
     }
 
-    static void setValueOfField(Object obj, String fieldName, Object value) {
-        try {
-            obj.getClass().getMethod("set" + StringUtils.capitalize(fieldName)).invoke(obj, value);
-        } catch (Exception ignored) {
-        }
-    }
-
-
     static Object valueOfField(Object obj, String fieldName) {
         try {
             return obj.getClass().getMethod("get" + StringUtils.capitalize(fieldName)).invoke(obj);
@@ -104,14 +96,6 @@ public class SqlBuilderUtils {
                     if (null != value) {
                         if (value instanceof String) {
                             if (!((String) value).isEmpty() && !value.equals("%%")) {
-                                String modifiedValue = (String) value;
-                                if (!modifiedValue.startsWith("%")) {
-                                    modifiedValue = "%" + modifiedValue;
-                                }
-                                if (!modifiedValue.endsWith("%")) {
-                                    modifiedValue += "%";
-                                }
-                                setValueOfField(query, fieldName, modifiedValue);
                                 sql.WHERE(columnName + " like " + fieldExpression);
                             }
                         } else if (value instanceof Number
