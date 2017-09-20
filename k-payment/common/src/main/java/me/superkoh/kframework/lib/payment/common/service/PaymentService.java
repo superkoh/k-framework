@@ -4,6 +4,7 @@ import me.superkoh.kframework.core.exception.KException;
 import me.superkoh.kframework.lib.payment.common.config.PaymentAccountInfoInterface;
 import me.superkoh.kframework.lib.payment.common.service.info.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +40,8 @@ public interface PaymentService {
     List<PaymentTransactionInfo> findTransactionsNeedQueryRefundState();
 
     void cancelExpiredOrder(String orderId) throws Exception;
+
+    void modifyTransactionAmount(String orderId, BigDecimal amount) throws Exception;
 
     // 通知处理
     PaymentNotifyProcessInfo handleUnionpayBackNotify(String encoding,

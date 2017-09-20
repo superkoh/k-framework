@@ -4,6 +4,7 @@ import me.superkoh.kframework.lib.db.mybatis.annotation.KMapper;
 import me.superkoh.kframework.lib.payment.common.model.domain.PaymentTransaction;
 import org.apache.ibatis.annotations.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -15,6 +16,9 @@ public interface PaymentTransactionMapper {
     @InsertProvider(type = PaymentTransactionSqlBuilder.class, method = "insert")
     @SelectKey(statement = "select last_insert_id()", keyProperty = "id", before = false, resultType = Integer.class)
     int insert(PaymentTransaction record);
+
+    @Update("UPDATE payment_transaction SET amount=#{amount} WHERE order_id=#{orderId} AND (status!='NOT_PAY' OR status!='PAY_ERROR')")
+    int updateAmountByOrderId(@Param("orderId") String orderId, @Param("amount") int amount);
 
     @UpdateProvider(type = PaymentTransactionSqlBuilder.class, method = "updateByPrimaryKeySelective")
     int updateByPrimaryKeySelective(PaymentTransaction record);
@@ -44,6 +48,6 @@ public interface PaymentTransactionMapper {
     List<PaymentTransaction> selectNeedQueryRefundStateTransactions(@Param("status") String status);
 
     @SelectProvider(type = PaymentTransactionSqlBuilder.class, method = "selectCanApplyRefundTransactions")
-    List<PaymentTransaction> selectCanApplyRefundTransactions(@Param("status") String status,
-                                                              @Param("orderIdList") List<String> orderIdList);
+    List<PaymentTransaction> selectCanApplyRefundTransactions(
+            @Param("status") String status, @Param("orderIdList") List<String> orderIdList);
 }

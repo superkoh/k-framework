@@ -193,6 +193,16 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional(rollbackFor = {Exception.class})
+    public void modifyTransactionAmount(String orderId, BigDecimal amount) throws Exception {
+        int fenAmount = amount.multiply(BigDecimal.valueOf(100.0)).intValue();
+        if (fenAmount <= 0) {
+            throw new KException("金额必须大于0！");
+        }
+        transactionMapper.updateAmountByOrderId(orderId, fenAmount);
+    }
+
+    @Override
     public PaymentNotifyProcessInfo handleUnionpayBackNotify(String encoding, Map<String, String> notifyParams, PaymentAccountInfoInterface accountInfo) throws Exception {
         ThirdPartyPayService unionService = getPayServiceByMethod(PaymentMethod.UNION_PC);
         PaymentNotifyProcessInfo notifyStatus = unionService.handleBackNotify(encoding, notifyParams, accountInfo);
@@ -357,13 +367,14 @@ public class PaymentServiceImpl implements PaymentService {
                 PaymentStatus localStatus = PaymentStatus.valueOf(transactionPO.getStatus());
                 PaymentStatus remoteStatus = statusInfo.getStatus();
                 if (remoteStatus.equals(PaymentStatus.SUCCESS)) {
-                    String amount;
+                    int needAmount = transactionPO.getAmount();
+                    int payAmount;
                     if (statusInfo.getAmountUnitIsYuan()) {
-                        amount = String.format("%.2f", transactionPO.getAmount() / 100.0);
+                        payAmount = (int)(Float.valueOf(statusInfo.getTotalAmount()) * 100);
                     } else {
-                        amount = transactionPO.getAmount().toString();
+                        payAmount = Integer.valueOf(statusInfo.getTotalAmount());
                     }
-                    if (!amount.equals(statusInfo.getTotalAmount())) {
+                    if (payAmount + 5 < needAmount) {
                         throw new KException("订单总价不匹配");
                     }
                 }
