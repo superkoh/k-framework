@@ -1,5 +1,7 @@
 package me.superkoh.kframework.mvc.controller.config;
 
+import java.util.ArrayList;
+import javax.annotation.PostConstruct;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,13 +17,18 @@ import java.util.List;
 @Configuration
 @ConfigurationProperties("kframework.mvc.response.header")
 public class ResponseHeaderProperties {
-    private List<String> accessControlAllowOrigins = Arrays.asList("*");
+    private List<String> accessControlAllowOrigins = new ArrayList<>();
     private List<String> accessControlAllowMethods = Arrays.asList(
             HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.OPTIONS.name());
     private Long accessControlMaxAge = 1800L;
     private List<String> accessControlAllowHeaders = Arrays.asList(
             "Content-Type", "X-Kmvc-Device-Token", "X-Kmvc-Auth", "X-Kmvc-User-Token", "X-Requested-With");
     private Boolean accessControlAllowCredentials = true;
+
+    @PostConstruct
+    public void init() {
+        accessControlAllowOrigins.add("*");
+    }
 
     public List<String> getAccessControlAllowOrigins() {
         return accessControlAllowOrigins;
