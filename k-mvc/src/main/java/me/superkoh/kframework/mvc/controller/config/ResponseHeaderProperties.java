@@ -25,11 +25,6 @@ public class ResponseHeaderProperties {
             "Content-Type", "X-Kmvc-Device-Token", "X-Kmvc-Auth", "X-Kmvc-User-Token", "X-Requested-With");
     private Boolean accessControlAllowCredentials = true;
 
-    @PostConstruct
-    public void init() {
-        accessControlAllowOrigins.add("*");
-    }
-
     public List<String> getAccessControlAllowOrigins() {
         return accessControlAllowOrigins;
     }
