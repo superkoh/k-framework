@@ -17,6 +17,9 @@ public class JavaMailMessage {
     private String fromAddress;
     private String username;
     private String password;
+    private String smtpPort = "25";
+    private String smtpPortSSL = "465";
+    private Boolean useSSL = true;
 
     private Properties properties;
 
@@ -27,7 +30,13 @@ public class JavaMailMessage {
         this.password = password;
         properties = System.getProperties();
         properties.setProperty("mail.smtp.host", smtpHost);
+        properties.setProperty("mail.smtp.port", smtpPort);
         properties.setProperty("mail.smtp.auth", "true");
+        if (useSSL) {
+            properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            properties.setProperty("mail.smtp.socketFactory.port", smtpPortSSL);
+            properties.setProperty("mail.smtp.port", smtpPortSSL);
+        }
     }
 
     public void sendMail(String to, String title, String content) throws MessagingException {
@@ -95,5 +104,29 @@ public class JavaMailMessage {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getSmtpPort() {
+        return smtpPort;
+    }
+
+    public void setSmtpPort(String smtpPort) {
+        this.smtpPort = smtpPort;
+    }
+
+    public String getSmtpPortSSL() {
+        return smtpPortSSL;
+    }
+
+    public void setSmtpPortSSL(String smtpPortSSL) {
+        this.smtpPortSSL = smtpPortSSL;
+    }
+
+    public Boolean getUseSSL() {
+        return useSSL;
+    }
+
+    public void setUseSSL(Boolean useSSL) {
+        this.useSSL = useSSL;
     }
 }
