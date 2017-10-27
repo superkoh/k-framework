@@ -49,7 +49,8 @@ public class PaymentTransactionSqlBuilder extends AbstractCommonSqlBuilder {
                 .SELECT("*")
                 .FROM(getTableName())
                 .WHERE("order_id=#{orderId}")
-                .WHERE("payment_method=#{payMethod}").toString();
+                .WHERE("payment_method=#{payMethod}")
+                .ORDER_BY("id DESC").toString();
     }
 
     public String selectNeedCloseTrades() {

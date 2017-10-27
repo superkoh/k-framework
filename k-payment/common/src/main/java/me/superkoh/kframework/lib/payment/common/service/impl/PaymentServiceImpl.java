@@ -199,7 +199,8 @@ public class PaymentServiceImpl implements PaymentService {
         if (fenAmount <= 0) {
             throw new KException("金额必须大于0！");
         }
-        transactionMapper.updateAmountByOrderId(orderId, fenAmount);
+        transactionMapper.updateToNeedCloseAndPayError(orderId);
+//        transactionMapper.updateAmountByOrderId(orderId, fenAmount);
     }
 
     @Override
