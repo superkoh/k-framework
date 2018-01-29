@@ -108,7 +108,7 @@ public class WXPayData {
         return payQueryReqData;
     }
 
-    public static WXPayData refundReqData(WXPerAppConfig appConfig, String outTradeNo, int totalFee) {
+    public static WXPayData refundReqData(WXPerAppConfig appConfig, String outTradeNo, int totalFee, int refundFee) {
         WXPayData refundReqData = new WXPayData();
         refundReqData.setValue(WXPayConstants.appIdKey, appConfig.getAppID());
         refundReqData.setValue(WXPayConstants.mchIdKey, appConfig.getMchID());
@@ -117,7 +117,7 @@ public class WXPayData {
         refundReqData.setValue(WXPayConstants.outTradeNoKey, outTradeNo);
         refundReqData.setValue(WXPayConstants.outRefundNoKey, outTradeNo);
         refundReqData.setValue(WXPayConstants.totalFeeKey, totalFee);
-        refundReqData.setValue(WXPayConstants.refundFeeKey, totalFee);
+        refundReqData.setValue(WXPayConstants.refundFeeKey, refundFee);
         refundReqData.setValue(WXPayConstants.opUserIdKey, appConfig.getMchID());
         refundReqData.setValue(WXPayConstants.refundFeeTypeKey, "CNY");
 

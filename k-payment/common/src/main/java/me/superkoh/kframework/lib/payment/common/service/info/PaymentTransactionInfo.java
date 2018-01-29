@@ -26,6 +26,7 @@ public class PaymentTransactionInfo {
     private Long expireTime;
     private ZoneId timezone;
     private PaymentStatus status;
+    private Integer refundAmount;
 
     public PaymentTransactionInfo(PaymentTransaction transactionPO) {
         BeanUtils.copyProperties(transactionPO, this);
@@ -152,5 +153,13 @@ public class PaymentTransactionInfo {
 
     public PaymentStatus getStatus() {
         return status;
+    }
+
+    public Integer getRefundAmount() {
+        return refundAmount;
+    }
+
+    public void setRefundAmount(Integer refundAmount) {
+        this.refundAmount = refundAmount;
     }
 }

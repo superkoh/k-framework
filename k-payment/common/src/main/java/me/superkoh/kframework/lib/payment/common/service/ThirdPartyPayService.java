@@ -23,6 +23,8 @@ public interface ThirdPartyPayService {
 
     PaymentStatusInfo applyRefund(String tradeId, int totalFee, PaymentAccountInfoInterface accountInfo) throws Exception;
 
+    PaymentStatusInfo applyRefund(String tradeId, int totalFee, int refundFee, PaymentAccountInfoInterface accountInfo) throws Exception;
+
     PaymentNotifyProcessInfo handleBackNotify(String encoding, Map<String, String> notifyParams, PaymentAccountInfoInterface accountInfo) throws Exception;
 
     PaymentNotifyProcessInfo handleFrontNotify(String encoding, Map<String, String> notifyParams, PaymentAccountInfoInterface accountInfo) throws Exception;

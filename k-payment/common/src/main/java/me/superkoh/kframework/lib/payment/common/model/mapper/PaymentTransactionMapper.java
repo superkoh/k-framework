@@ -20,6 +20,9 @@ public interface PaymentTransactionMapper {
     @Update("UPDATE payment_transaction SET amount=#{amount} WHERE order_id=#{orderId} AND (status!='NOT_PAY' OR status!='PAY_ERROR')")
     int updateAmountByOrderId(@Param("orderId") String orderId, @Param("amount") int amount);
 
+    @Update("UPDATE payment_transaction SET refund_amount=#{amount} WHERE order_id=#{orderId}")
+    int updateRefundAmountByOrderId(@Param("orderId") String orderId, @Param("amount") int amount);
+
     @Update("UPDATE payment_transaction SET need_close=1, status='PAY_ERROR' WHERE order_id=#{orderId} AND (status!='SUCCESS' AND status!='CLOSED')")
     int updateToNeedCloseAndPayError(@Param("orderId") String orderId);
 

@@ -25,6 +25,8 @@ public interface PaymentService {
 
     PaymentStatusInfo closePaymentTransaction(PaymentTransactionInfo transactionInfo, PaymentAccountInfoInterface accountInfo) throws Exception;
 
+    void updateRefundAmount(String orderId, int refundFee) throws Exception;
+
     PaymentStatusInfo queryRefundState(PaymentTransactionInfo transactionInfo, PaymentAccountInfoInterface accountInfo) throws Exception;
 
     PaymentStatusInfo applyRefundTransaction(PaymentTransactionInfo transactionInfo, PaymentAccountInfoInterface accountInfo) throws Exception;

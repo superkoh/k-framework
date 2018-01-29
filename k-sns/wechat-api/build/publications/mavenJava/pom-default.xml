@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>me.superkoh.kframework.lib.sns</groupId>
+  <artifactId>wechat-api</artifactId>
+  <version>1.1.21</version>
+  <dependencies>
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp</artifactId>
+      <version>3.8.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.8.8.1</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk15on</artifactId>
+      <version>1.57</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.10</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>me.superkoh.kframework</groupId>
+      <artifactId>core</artifactId>
+      <version>1.1.21</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>me.superkoh.kframework.lib.db</groupId>
+      <artifactId>mybatis</artifactId>
+      <version>1.1.21</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+</project>

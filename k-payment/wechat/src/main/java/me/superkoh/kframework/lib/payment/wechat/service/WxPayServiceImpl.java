@@ -230,13 +230,18 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
 
     @Override
     public PaymentStatusInfo applyRefund(String tradeId, int totalFee, PaymentAccountInfoInterface accountInfo) throws Exception {
+        return applyRefund(tradeId, totalFee, totalFee, accountInfo);
+    }
+
+    @Override
+    public PaymentStatusInfo applyRefund(String tradeId, int totalFee, int refundFee, PaymentAccountInfoInterface accountInfo) throws Exception {
         tradeId = accountInfo.getTradePrefix() + tradeId;
         PaymentStatusInfo statusInfo = new PaymentStatusInfo();
         statusInfo.setTradeIdWithPrefix(tradeId, accountInfo.getTradePrefix());
         WXPerAppConfig appConfig = extractWxConfig(accountInfo);
 
         try {
-            WXPayData refundState = applyRefund_internal(tradeId, totalFee, appConfig);
+            WXPayData refundState = applyRefund_internal(tradeId, totalFee, refundFee, appConfig);
             statusInfo.setServiceStatus(PaymentServiceStatus.SUCCESS);
 
             // 处理业务相关错误
@@ -398,8 +403,8 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
         return processQueryRefundByReqData(orderReqData, appConfig);
     }
 
-    private WXPayData applyRefund_internal(String outTradeNo, int totalFee, WXPerAppConfig appConfig) throws Exception {
-        WXPayData orderReqData = WXPayData.refundReqData(appConfig, outTradeNo, totalFee);
+    private WXPayData applyRefund_internal(String outTradeNo, int totalFee, int refundFee, WXPerAppConfig appConfig) throws Exception {
+        WXPayData orderReqData = WXPayData.refundReqData(appConfig, outTradeNo, totalFee, refundFee);
         return processApplyRefundByReqData(orderReqData, appConfig);
     }
 

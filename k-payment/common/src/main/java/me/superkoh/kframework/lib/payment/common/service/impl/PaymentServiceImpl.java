@@ -116,6 +116,11 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    public void updateRefundAmount(String orderId, int refundFee) throws Exception {
+        transactionMapper.updateRefundAmountByOrderId(orderId, refundFee);
+    }
+
+    @Override
     public PaymentStatusInfo queryRefundState(PaymentTransactionInfo transactionInfo, PaymentAccountInfoInterface accountInfo) throws Exception {
         ThirdPartyPayService payService = getPayServiceByMethod(transactionInfo.getPaymentMethod());
         PaymentStatusInfo statusInfo = payService.queryRefundState(transactionInfo.getId().toString(), accountInfo);
@@ -127,7 +132,7 @@ public class PaymentServiceImpl implements PaymentService {
     public PaymentStatusInfo applyRefundTransaction(PaymentTransactionInfo transactionInfo, PaymentAccountInfoInterface accountInfo) throws Exception {
         ThirdPartyPayService payService = getPayServiceByMethod(transactionInfo.getPaymentMethod());
         PaymentStatusInfo statusInfo = payService.applyRefund(transactionInfo.getId().toString(),
-                transactionInfo.getAmount(), accountInfo);
+                transactionInfo.getAmount(),transactionInfo.getRefundAmount(), accountInfo);
         updateTransactionOrderRefundStatus(statusInfo);
         return statusInfo;
     }

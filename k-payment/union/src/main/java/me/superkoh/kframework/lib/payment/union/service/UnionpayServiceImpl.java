@@ -120,6 +120,11 @@ public class UnionpayServiceImpl implements ThirdPartyPayService {
         return null;
     }
 
+    @Override
+    public PaymentStatusInfo applyRefund(String tradeId, int totalFee, int refundFee, PaymentAccountInfoInterface accountInfo) throws Exception {
+        return null;
+    }
+
     private UnionPrepayInfo getUnionPrepayInfo(String orderId, String txnTime, String amountStr, boolean isWap, String payTimeout, String orderTimeout, String orderTimeoutInterval, SDKConfig config) {
         Map<String, String> requestData = new HashMap<>();
         /*银联全渠道系统，产品参数，除了encoding自行选择外其他不需修改***/

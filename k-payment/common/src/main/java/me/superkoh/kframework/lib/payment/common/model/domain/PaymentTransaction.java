@@ -18,6 +18,7 @@ public class PaymentTransaction extends TimeAndAuthorTraceableDomain {
     private String currency;
     private Integer amount;
     private Integer couponAmount;
+    private Integer refundAmount;
     private Long paymentTime;
     private String paymentNote;
     private Long effectTime;
@@ -146,5 +147,13 @@ public class PaymentTransaction extends TimeAndAuthorTraceableDomain {
 
     public void setNeedClose(Boolean needClose) {
         this.needClose = needClose;
+    }
+
+    public Integer getRefundAmount() {
+        return refundAmount;
+    }
+
+    public void setRefundAmount(Integer refundAmount) {
+        this.refundAmount = refundAmount;
     }
 }

@@ -245,6 +245,11 @@ public class AlipayServiceImpl implements ThirdPartyPayService {
         return null;
     }
 
+    @Override
+    public PaymentStatusInfo applyRefund(String tradeId, int totalFee, int refundFee, PaymentAccountInfoInterface accountInfo) throws Exception {
+        return null;
+    }
+
     private AlipayPrepayInfo getAlipayAppPayInfo(String tradeNo, String amount, String timeout, String productName, String productDesc, PaymentAccountInfoInterface accountInfo) {
         AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
         //SDK已经封装掉了公共参数，这里只需要传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
