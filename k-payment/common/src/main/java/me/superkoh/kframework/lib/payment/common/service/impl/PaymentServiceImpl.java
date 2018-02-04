@@ -437,7 +437,7 @@ public class PaymentServiceImpl implements PaymentService {
                     if (validState) {
                         transactionPO.setStatus(remoteStatus.name());
                         transactionPO.setRefundTime(statusInfo.getPaymentTime());
-                        getOrderCoordinator().updateRefundStatus(transactionPO.getOrderId(), transactionPO);
+                        getOrderCoordinator().updateRefundStatus(transactionPO.getOrderId(), transactionPO, statusInfo.getRefundAmount());
                         transactionMapper.updateByPrimaryKeySelective(transactionPO);
                     } else {
                         logPaymentException(transactionPO.getOrderId(), tradeId, localStatus.name(), remoteStatus.name(), "交易状态错误");

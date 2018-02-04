@@ -22,5 +22,5 @@ public interface PaymentOrderCoordinator {
 
     List<String> getUserAppliedRefundOrderIdList();
 
-    void updateRefundStatus(String orderId, PaymentTransaction transactionPO) throws Exception;
+    void updateRefundStatus(String orderId, PaymentTransaction transactionPO, Integer refundFee) throws Exception;
 }

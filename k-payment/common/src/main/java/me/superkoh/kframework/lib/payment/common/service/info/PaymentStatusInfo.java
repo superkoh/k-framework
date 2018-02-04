@@ -33,6 +33,8 @@ public class PaymentStatusInfo {
     // 银联交易，查无此交易
     private boolean unionOrderNotExist;
 
+    private Integer refundAmount;
+
     public void setTradeIdWithPrefix(String tradeId, String prefix) {
         if (null != tradeId) {
             if (tradeId.startsWith(prefix) && !prefix.isEmpty()) {
@@ -139,5 +141,13 @@ public class PaymentStatusInfo {
 
     public void setUnionOrderNotExist(boolean unionOrderNotExist) {
         this.unionOrderNotExist = unionOrderNotExist;
+    }
+
+    public Integer getRefundAmount() {
+        return refundAmount;
+    }
+
+    public void setRefundAmount(Integer refundAmount) {
+        this.refundAmount = refundAmount;
     }
 }
