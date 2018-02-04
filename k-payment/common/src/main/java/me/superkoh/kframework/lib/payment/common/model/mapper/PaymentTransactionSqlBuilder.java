@@ -81,14 +81,6 @@ public class PaymentTransactionSqlBuilder extends AbstractCommonSqlBuilder {
                 .ORDER_BY("transaction_time ASC LIMIT 200").toString();
     }
 
-    public String selectNeedQueryRefundStateTransactions(@Param("status") String status) {
-        return new SQL()
-                .SELECT("*")
-                .FROM(getTableName())
-                .WHERE("status = #{status}")
-                .ORDER_BY("id ASC LIMIT 200").toString();
-    }
-
     public String selectCanApplyRefundTransactions(@Param("status") String status, @Param("orderIdList") List<String> orderIdList) {
         String orderIdStr = orderIdList.stream().collect(Collectors.joining(","));
         orderIdStr = "(" + orderIdStr + ")";
