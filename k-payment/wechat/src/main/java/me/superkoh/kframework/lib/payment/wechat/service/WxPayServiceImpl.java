@@ -209,10 +209,13 @@ public class WxPayServiceImpl implements ThirdPartyPayService {
             } else {
                 String refundStatus = (String)refundState.getValue(WXPayConstants.refundStatusPrefixKey + 0);
                 if ("SUCCESS".equals(refundStatus)) {
-                    Integer refundFee = (Integer) refundState.getValue(WXPayConstants.refundFeeKey);
+                    String refundFee = (String) refundState.getValue(WXPayConstants.refundFeeKey);
                     String refundTime = (String)refundState.getValue(WXPayConstants.refundSuccessTimePrefixKey + 0);
                     statusInfo.setStatus(PaymentStatus.REFUNDED);
-                    statusInfo.setRefundAmount(refundFee);
+                    try {
+                        statusInfo.setRefundAmount(Integer.valueOf(refundFee));
+                    } catch (Exception ignored) {
+                    }
                     statusInfo.setRefundTime(DateTimeHelper.timestampOfDateTimeStringAtChina(refundTime, "yyyy-MM-dd HH:mm:ss"));
                 } else if ("PROCESSING".equals(refundStatus)) {
                     statusInfo.setStatus(PaymentStatus.APPLIED_REFUND);
